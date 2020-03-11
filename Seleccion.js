@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScrollView, View, Text } from 'react-native';
-import { Card, Title, Paragraph} from 'react-native-paper';
+import { Card, Title, Paragraph, ActivityIndicator, Colors} from 'react-native-paper';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { getProductos } from './httpService';
 
@@ -8,15 +8,16 @@ function Locales (props){
 
   const comercios = props.locales.map((local) =>
     <Card
-      onPress={() => props.navegar.navigate('Login')}
+      onPress={() => props.navegar.navigate('Carta',{comercio:local.nombre})}
       //onPress={() => this.setState({productos2:this.state.productos[0].nombre})}
       key={local.nombre}
      >
      <Card.Content>
-      <Title>DISCO</Title>
-      <Paragraph>{local.nombre}</Paragraph>
+      <Title>{local.nombre}</Title>
+      <Paragraph>{local.direccion}</Paragraph>
+      <Paragraph>Apertura: {local.apertura} - Cierre:{local.cierre}</Paragraph>
       </Card.Content>
-      <Card.Cover source={{ uri: 'https://picsum.photos/1042' }} />
+      <Card.Cover source={{ uri: 'https://picsum.photos/'+Math.floor(Math.random()) }} />
     </Card>
   );
 
@@ -31,13 +32,13 @@ export default class Seleccion extends React.Component{
 
   constructor (){
     super();
-    this.state = {productos:[], productos2:'Hola'};
+    this.state = {productos:[]};
   }
 
   componentDidMount (){
     getProductos().then(response => {
       this.setState({productos:response.data});
-      console.log(this.state.productos);
+      //console.log(this.state.productos);
       //this.setState({productos2:'response.data'});
     });
   }
@@ -46,8 +47,8 @@ export default class Seleccion extends React.Component{
 
           if (this.state.productos.length < 1){
             return (
-              <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <Text>Home Screen</Text>
+              <View>
+                <ActivityIndicator animating={true} color={Colors.red800} />
               </View>
             );
           }
