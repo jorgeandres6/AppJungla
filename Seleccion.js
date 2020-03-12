@@ -1,6 +1,6 @@
 import React from 'react';
-import { ScrollView, View, Text } from 'react-native';
-import { Card, Title, Paragraph, ActivityIndicator, Colors} from 'react-native-paper';
+import { ScrollView, View, Text, ActivityIndicator } from 'react-native';
+import { Card, Title, Paragraph, Colors} from 'react-native-paper';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { getProductos } from './httpService';
 
@@ -47,8 +47,8 @@ export default class Seleccion extends React.Component{
 
           if (this.state.productos.length < 1){
             return (
-              <View>
-                <ActivityIndicator animating={true} color={Colors.red800} />
+              <View style={{justifyContent:'space-around', alignItems:'center'}}>
+                <ActivityIndicator size="large" color="#0000ff" />
               </View>
             );
           }
