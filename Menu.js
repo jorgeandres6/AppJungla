@@ -8,7 +8,7 @@ function Menu (props){
 
     const menu = props.menu.map((item) =>
       <Card
-        onPress={() => props.navegar.navigate('Producto',{nombre:item.nombre,descripcion:item.descripcion,precio:item.precio})}
+        onPress={() => props.navegar.navigate('Producto',{nombre:item.nombre,descripcion:item.descripcion,precio:item.precio,listaArray:props.lista})}
         //onPress={() => this.setState({productos2:this.state.productos[0].nombre})}
         key={item.nombre}
        >
@@ -37,7 +37,7 @@ export default class Carta extends React.Component{
   
     componentDidMount (){
      const { comercio } = this.props.route.params;
-     console.log(comercio);
+     //console.log(comercio);
      getMenu(comercio).then(response => {
      //getMenu('W').then(response => {
      this.setState({productos:response.data});
@@ -48,7 +48,9 @@ export default class Carta extends React.Component{
     }
   
       render(){
-  
+
+        const { listaArray } = this.props.route.params;
+        const { comercio } = this.props.route.params;
             if (this.state.productos.length < 1){
               return (
                 <View style={{justifyContent:'space-around', alignItems:'center'}}>
@@ -59,7 +61,7 @@ export default class Carta extends React.Component{
             else
             {
               return (
-                <Menu menu={this.state.productos} navegar={this.props.navigation}/>
+                <Menu menu={this.state.productos} navegar={this.props.navigation} lista={listaArray} local={comercio}/>
               );
             }
       }

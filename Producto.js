@@ -8,7 +8,7 @@ export default class Producto extends React.Component{
 
     constructor (){
       super();
-      this.state = {contador:0};
+      this.state = {contador:1};
     }
 
     aumentarCantidad = () => {
@@ -16,9 +16,25 @@ export default class Producto extends React.Component{
     }
 
     disminuirCantidad = () => {
-      if (this.state.contador > 0){
+      if (this.state.contador > 1){
         this.setState({contador:this.state.contador-1});
       }
+      console.log(this.state.lista);
+    }
+
+    agregarCarrito = () => {
+      const { nombre } = this.props.route.params;
+      const { precio } = this.props.route.params;
+      const { local } = his.props.route.params;
+      let carrito = [];
+      const { listaArray } = this.props.route.params;
+      if (listaArray!=undefined){
+        carrito=listaArray.slice();
+      }
+      let articulo = {producto:nombre,cantidad:this.state.contador,costo:precio,comercio:local};
+      carrito.push(articulo);
+      console.log(carrito);
+      this.props.navigation.navigate('Carta',{listaArray:carrito});
     }
   
       render(){
@@ -47,7 +63,7 @@ export default class Producto extends React.Component{
                      <Button
                         mode="contained"
                         compact={false}
-                        onPress={() => this.props.navigation.navigate('Login')}
+                        onPress={this.agregarCarrito}
                         icon="cart-plus"
                      >   
                         Agregar al carrito
