@@ -26,14 +26,24 @@ function Menu (props){
         <ScrollView> 
           {menu}
         </ScrollView>
-        <View>
+        <View style={{flexDirection:'row', justifyContent:'space-around'}}>
         <Button
-                onPress={() => props.navegar.navigate('Carrito',{listaArray:props.lista})}
-                icon="cart-outline"
-                mode="outlined"
-              >
-                Carrito
-              </Button>
+        onPress={() => props.navegar.navigate('Carrito',{listaArray:props.lista})}
+        icon="cart-outline"
+        mode="contained"
+        disabled= {props.disable}
+        >
+          Carrito
+        </Button>
+
+        <Button
+        onPress={() => props.navegar.navigate('Carrito',{listaArray:props.lista})}
+        icon="account-group"
+        mode="contained"
+        disabled= {props.disable}
+        >
+          Dividir cuenta
+         </Button>
         </View>
       </>
     );
@@ -62,6 +72,8 @@ export default class Carta extends React.Component{
 
         const { listaArray } = this.props.route.params;
         const { comercio } = this.props.route.params;
+        let deshabilitar = true;
+        listaArray==undefined ? deshabilitar = true : deshabilitar = false;
             if (this.state.productos.length < 1){
               return (
                 <View style={{justifyContent:'center', alignItems:'center', flex:1}}>
@@ -72,7 +84,7 @@ export default class Carta extends React.Component{
             else
             {
               return (
-                  <Menu menu={this.state.productos} navegar={this.props.navigation} lista={listaArray} local={comercio}/>
+                  <Menu menu={this.state.productos} navegar={this.props.navigation} lista={listaArray} local={comercio} disable={deshabilitar} />
               );
             }
       }
