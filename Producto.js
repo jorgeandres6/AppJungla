@@ -25,13 +25,14 @@ export default class Producto extends React.Component{
     agregarCarrito = () => {
       const { nombre } = this.props.route.params;
       const { precio } = this.props.route.params;
-      const { local } = his.props.route.params;
+      const { local } = this.props.route.params;
       let carrito = [];
+      let ptotal = this.state.contador * precio;
       const { listaArray } = this.props.route.params;
       if (listaArray!=undefined){
         carrito=listaArray.slice();
       }
-      let articulo = {producto:nombre,cantidad:this.state.contador,costo:precio,comercio:local};
+      let articulo = {producto:nombre,cantidad:this.state.contador,costo:precio,comercio:local,total:ptotal};
       carrito.push(articulo);
       console.log(carrito);
       this.props.navigation.navigate('Carta',{listaArray:carrito});
@@ -46,9 +47,9 @@ export default class Producto extends React.Component{
                   <Image source={{uri: 'https://picsum.photos/'+Math.floor(Math.random())}}
                      style={{width:300,height:300}} 
                      />
-                     <Paragraph>{nombre}</Paragraph>
+                     <Paragraph style={{fontWeight:'bold'}}>{nombre}</Paragraph>
                      <Paragraph>{descripcion}</Paragraph>
-                     <Paragraph>Costo por unidad: {precio} USD</Paragraph>
+                     <Paragraph><Text style={{fontWeight:'bold'}}>Costo por unidad:</Text> {precio} USD</Paragraph>
                      <IconButton 
                      icon='plus-circle-outline'
                      onPress={this.aumentarCantidad}

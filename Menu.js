@@ -1,6 +1,6 @@
 import React from 'react';
-import { ScrollView, View, ActivityIndicator } from 'react-native';
-import { Card, Title, Paragraph, Colors} from 'react-native-paper';
+import { ScrollView, View, ActivityIndicator, Text } from 'react-native';
+import { Card, Title, Paragraph, Colors, Button} from 'react-native-paper';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { getMenu } from './httpService';
 
@@ -13,18 +13,29 @@ function Menu (props){
         key={item.nombre}
        >
        <Card.Content>
-        <Title>{item.nombre}</Title>
+        <Title style={{fontWeight:'bold'}}>{item.nombre}</Title>
         <Paragraph>{item.descripcion}</Paragraph>
-        <Paragraph>Costo: {item.precio} USD</Paragraph>
+        <Paragraph><Text style={{fontWeight:'bold'}}>Costo:</Text> {item.precio} USD</Paragraph>
         </Card.Content>
         <Card.Cover source={{ uri: 'https://picsum.photos/'+Math.floor(Math.random()) }} />
       </Card>
     );
   
     return(
-      <ScrollView>
-        {menu}
-      </ScrollView>
+      <>
+        <ScrollView> 
+          {menu}
+        </ScrollView>
+        <View>
+        <Button
+                onPress={() => props.navegar.navigate('Carrito',{listaArray:props.lista})}
+                icon="cart-outline"
+                mode="outlined"
+              >
+                Carrito
+              </Button>
+        </View>
+      </>
     );
   }
 
@@ -53,7 +64,7 @@ export default class Carta extends React.Component{
         const { comercio } = this.props.route.params;
             if (this.state.productos.length < 1){
               return (
-                <View style={{justifyContent:'space-around', alignItems:'center'}}>
+                <View style={{justifyContent:'center', alignItems:'center', flex:1}}>
                   <ActivityIndicator size="large" color="#0000ff" />
                 </View>
               );
@@ -61,7 +72,7 @@ export default class Carta extends React.Component{
             else
             {
               return (
-                <Menu menu={this.state.productos} navegar={this.props.navigation} lista={listaArray} local={comercio}/>
+                  <Menu menu={this.state.productos} navegar={this.props.navigation} lista={listaArray} local={comercio}/>
               );
             }
       }

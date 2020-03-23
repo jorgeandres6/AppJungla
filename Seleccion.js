@@ -13,9 +13,9 @@ function Locales (props){
       key={local.nombre}
      >
      <Card.Content>
-      <Title>{local.nombre}</Title>
+      <Title style={{fontWeight:'bold'}}>{local.nombre}</Title>
       <Paragraph>{local.direccion}</Paragraph>
-      <Paragraph>Apertura: {local.apertura} - Cierre:{local.cierre}</Paragraph>
+      <Paragraph><Text style={{fontWeight:'bold'}}>Apertura:</Text> {local.apertura} - <Text style={{fontWeight:'bold'}}>Cierre:</Text>{local.cierre}</Paragraph>
       </Card.Content>
       <Card.Cover source={{ uri: 'https://picsum.photos/'+Math.floor(Math.random()) }} />
     </Card>
