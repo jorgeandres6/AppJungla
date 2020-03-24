@@ -5,12 +5,11 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import { getMenu } from './httpService';
 
 function Lista (props){
-    const menu = props.lista.map((item) =>
-
+    const menu = props.lista.map((item,index,array) =>
+    
     <Card
         //onPress={() => props.navegar.navigate('Producto',{nombre:item.nombre,descripcion:item.descripcion,precio:item.precio,listaArray:props.lista})}
-        //onPress={() => this.setState({productos2:this.state.productos[0].nombre})}
-        key={item.producto}
+        key={index}
        >
        <Card.Content>
         <Title style={{fontWeight:'bold'}}>{item.producto}</Title>
@@ -18,6 +17,18 @@ function Lista (props){
         <Paragraph><Text style={{fontWeight:'bold'}}>Precio unitario:</Text> {item.costo} USD</Paragraph>
         <Paragraph><Text style={{fontWeight:'bold'}}>Precio total:</Text> {item.total} USD</Paragraph>
         </Card.Content>
+
+        <Card.Actions>
+          <Button
+             onPress={() => props.navegar.navigate('Eliminar',{listaArray:array, indice:index})}
+             //onPress={console.log(array)}
+             icon="cart-remove"
+             mode="outlined"
+          >
+            Eliminar
+          </Button>
+        </Card.Actions>
+
         <Card.Cover source={{ uri: 'https://picsum.photos/'+Math.floor(Math.random()) }} />
       </Card>
 
@@ -31,13 +42,13 @@ function Lista (props){
           {menu}
         </ScrollView>
         <View>
-        <Button
-                onPress={() => props.navegar.navigate('Carrito',{listaArray:props.lista})}
-                icon="cash-multiple"
-                mode="outlined"
-              >
-                Proceder al pago
-              </Button>
+          <Button
+          onPress={() => props.navegar.navigate('Carrito',{listaArray:props.lista})}
+          icon="cash-multiple"
+          mode="outlined"
+          >
+            Proceder al pago
+          </Button>
         </View>
       </>
     );
@@ -57,7 +68,7 @@ export default class Carrito extends React.Component{
         //const { comercio } = this.props.route.params;
             
               return (
-                <Lista lista={listaArray}/>
+                <Lista lista={listaArray} navegar={this.props.navigation}/>
               );
       }
 }
