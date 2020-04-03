@@ -9,3 +9,8 @@ export function getProductos (){
 export function getMenu (comercio){
   return axios.get('https://jungla-caf2d.firebaseio.com/menu/'+comercio+'.json');
 }
+
+export function addUsuarios (usuario){
+  //return axios.get('https://jungla-caf2d.firebaseio.com/usuarios.json?orderBy="correo"&equalTo="'+usuario+'"&print=pretty');
+  return axios.get('https://jungla-caf2d.firebaseio.com/usuarios.json?orderBy="correo"&equalTo="'+usuario+'"');
+}

@@ -16,6 +16,13 @@ function Lista (props){
         <Paragraph><Text style={{fontWeight:'bold'}}>Cantidad:</Text> {item.cantidad}</Paragraph>
         <Paragraph><Text style={{fontWeight:'bold'}}>Precio unitario:</Text> {item.costo} USD</Paragraph>
         <Paragraph><Text style={{fontWeight:'bold'}}>Precio total:</Text> {item.total} USD</Paragraph>
+        <Chip 
+        icon="information" 
+        onPress={() => console.log('Pressed')}
+        style={{backgroundColor:'red'}}
+        >
+          Hola
+        </Chip>
         </Card.Content>
 
         <Card.Actions>
@@ -46,9 +53,18 @@ function Lista (props){
           onPress={() => props.navegar.navigate('Carrito',{listaArray:props.lista})}
           icon="cash-multiple"
           mode="outlined"
+          disabled= {props.disable}
           >
             Proceder al pago
           </Button>
+          <Button
+            onPress={() => props.navegar.navigate('Split')}
+            icon="account-group"
+            mode="contained"
+            disabled= {props.disable}
+          >
+          Dividir cuenta
+         </Button>
         </View>
       </>
     );
@@ -66,9 +82,11 @@ export default class Carrito extends React.Component{
 
         const { listaArray } = this.props.route.params;
         //const { comercio } = this.props.route.params;
+        let deshabilitar = true;
+        (listaArray==undefined || listaArray.length<1) ? deshabilitar = true : deshabilitar = false;
             
               return (
-                <Lista lista={listaArray} navegar={this.props.navigation}/>
+                <Lista lista={listaArray} navegar={this.props.navigation} disable={deshabilitar}/>
               );
       }
 }

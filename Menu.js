@@ -1,7 +1,6 @@
 import React from 'react';
 import { ScrollView, View, ActivityIndicator, Text } from 'react-native';
-import { Card, Title, Paragraph, Colors, Button} from 'react-native-paper';
-import { Provider as PaperProvider } from 'react-native-paper';
+import { Card, Title, Paragraph, Chip, Button} from 'react-native-paper';
 import { getMenu } from './httpService';
 
 function Menu (props){
@@ -10,6 +9,7 @@ function Menu (props){
       <Card
         onPress={() => props.navegar.navigate('Producto',{nombre:item.nombre,descripcion:item.descripcion,precio:item.precio,listaArray:props.lista})}
         //onPress={() => this.setState({productos2:this.state.productos[0].nombre})}
+        //style={{backgroundColor:'red'}}
         key={item.nombre}
        >
        <Card.Content>
@@ -35,15 +35,6 @@ function Menu (props){
         >
           Carrito
         </Button>
-
-        <Button
-        onPress={() => props.navegar.navigate('Carrito',{listaArray:props.lista})}
-        icon="account-group"
-        mode="contained"
-        disabled= {props.disable}
-        >
-          Dividir cuenta
-         </Button>
         </View>
       </>
     );
@@ -73,7 +64,7 @@ export default class Carta extends React.Component{
         const { listaArray } = this.props.route.params;
         const { comercio } = this.props.route.params;
         let deshabilitar = true;
-        listaArray==undefined ? deshabilitar = true : deshabilitar = false;
+        (listaArray==undefined || listaArray.length<1) ? deshabilitar = true : deshabilitar = false;
             if (this.state.productos.length < 1){
               return (
                 <View style={{justifyContent:'center', alignItems:'center', flex:1}}>
