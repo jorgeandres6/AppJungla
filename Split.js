@@ -8,53 +8,22 @@ function Lista (props){
     const menu = props.lista.map((item,index) =>
     
     <Chip 
-    key={item.id} 
+    key={item.correo} 
     onPress={() => console.log('Pressed')}
     mode="outlined"
     style={{backgroundColor:props.colores[index]}}
     //avatar={{ uri: 'https://picsum.photos/'+Math.floor(Math.random())}}
     >
       <Text style={{color:'white'}}>
-        {item.nickname}
+        {item.correo}
       </Text>
     </Chip>
     );
 
     return(
-      <>
-        <Title>
-          Agregar compañeros al equipo
-        </Title>
         <ScrollView> 
           {menu}
         </ScrollView>
-        <View>
-          <TextInput
-            label="Ingrese el correo de su compañero"
-            onChangeText={text => setText(text)}
-            value={text}
-            mode="outlined"
-          />
-        <Button
-          onPress={() => {
-            addUsuarios(text).then(response => {
-              console.log(response.data);
-            });
-          }}
-          icon="account-plus-outline"
-          mode="outlined"
-        >
-          Agregar compañero
-        </Button>
-        <Button
-          onPress={() => props.navegar.navigate('Carrito')}
-          icon="cart-outline"
-          mode="outlined"
-        >
-          Regresar al carrito
-        </Button>
-        </View>
-      </>
     );
 
 }
@@ -66,13 +35,54 @@ export default class Split extends React.Component{
       super();
       this.state ={
         colores:['grey','orangered','darkmagenta','midnightblue','darkgreen','sienna','deeppink','lightslategrey','mediumvioletred','orange'],
-        usuarios:[{id:0,nickname:'juancho4'},{id:1,nickname:'luisitam'},{id:2,nickname:'maria_u'}],
+        usuarios:[{correo:'juancho4@msn.com'},{correo:'luisitam@yahoo.com'},{correo:'maria_u@gmail.com'}],
+        text:''
       }
+    }
+
+    agregarUsuario = (item) =>{
+      let arrayUsuario = this.state.usuarios;
+      arrayUsuario.push(item);
+      this.setState({usuarios:arrayUsuario});
     }
 
     render(){
       return(
-        <Lista lista={this.state.usuarios} colores={this.state.colores} navegar={this.props.navigation}/>
+        <>
+          <Title>
+            Agregar compañeros al equipo
+          </Title>
+          <Lista lista={this.state.usuarios} colores={this.state.colores} navegar={this.props.navigation}/>
+          <View>
+            <TextInput
+              label="Ingrese el correo de su compañero"
+              onChangeText={text => this.setState({text})}
+              value={this.state.text}
+              mode="outlined"
+            />
+            <Button
+            onPress={() => {
+              addUsuarios(this.state.text).then(response => {
+                //console.log(response.data[Object.keys(response.data)]);
+                response.data[Object.keys(response.data)] != undefined ? this.agregarUsuario(response.data[Object.keys(response.data)]):alert("El usuario no esta registrado");
+                //this.agregarUsuario(response.data);
+              });
+            }}
+            icon="account-plus-outline"
+            mode="outlined"
+            >
+              Agregar compañero
+            </Button>
+            <Button
+            //onPress={() => this.props.navigation.navigate('Carrito')}
+            onPress={() => console.log(this.state.usuarios)}
+            icon="cart-outline"
+            mode="outlined"
+            >
+              Regresar al carrito
+            </Button>
+          </View>
+        </>
       )
     }
 
