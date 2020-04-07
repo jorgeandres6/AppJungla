@@ -28,14 +28,13 @@ function Lista (props){
 
 }
 
-
 export default class Split extends React.Component{
 
     constructor (){
       super();
       this.state ={
         colores:['grey','orangered','darkmagenta','midnightblue','darkgreen','sienna','deeppink','lightslategrey','mediumvioletred','orange'],
-        usuarios:[{correo:'juancho4@msn.com'},{correo:'luisitam@yahoo.com'},{correo:'maria_u@gmail.com'}],
+        usuarios:[{correo:'usuario'}],
         text:''
       }
     }
@@ -44,6 +43,8 @@ export default class Split extends React.Component{
       let arrayUsuario = this.state.usuarios;
       arrayUsuario.push(item);
       this.setState({usuarios:arrayUsuario});
+      this.setState({text:''});
+      alert('Usuario '+item.correo+' agregado correctamente')
     }
 
     render(){
@@ -74,8 +75,8 @@ export default class Split extends React.Component{
               Agregar compañero
             </Button>
             <Button
-            //onPress={() => this.props.navigation.navigate('Carrito')}
-            onPress={() => console.log(this.state.usuarios)}
+            onPress={() => this.props.navigation.navigate('Carrito',{usuarios:this.state.usuarios, colores:this.state.colores})}
+            //onPress={() => console.log(this.state.usuarios)}
             icon="cart-outline"
             mode="outlined"
             >

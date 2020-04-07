@@ -1,12 +1,21 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { ScrollView, View, ActivityIndicator, Text } from 'react-native';
 import { Chip, Button, Paragraph, Card, Title} from 'react-native-paper';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { getMenu } from './httpService';
 
-function Lista (props){
+function Lista (props){ 
+
+    let arrayPos = new Array(props.lista.length);
+
+    arrayPos.fill(0);
+
+    const [users,setUsers] = useState(arrayPos);
+
+    //const [users,setUsers] = useState(0);
+  
     const menu = props.lista.map((item,index,array) =>
-    
+
     <Card
         //onPress={() => props.navegar.navigate('Producto',{nombre:item.nombre,descripcion:item.descripcion,precio:item.precio,listaArray:props.lista})}
         key={index}
@@ -18,10 +27,29 @@ function Lista (props){
         <Paragraph><Text style={{fontWeight:'bold'}}>Precio total:</Text> {item.total} USD</Paragraph>
         <Chip 
         icon="information" 
-        onPress={() => console.log('Pressed')}
-        style={{backgroundColor:'red'}}
+        onPress={() => {
+          
+          if (props.arrayUsuarios != undefined){
+
+            /*item.usuario++;
+            if(item.usuario > props.arrayUsuarios.length-1){
+              item.usuario=0;
+            }
+            
+            setUsuarios(array);*/
+            let auxpos = users.slice(0,users.length);
+            auxpos[index]++;        
+            if(auxpos[index] > props.arrayUsuarios.length-1){
+              auxpos[index]=0; 
+            }
+            setUsers(auxpos);
+          }
+        }}
+        style={{backgroundColor:props.arrayColores != undefined?props.arrayColores[users[index]]:"grey"}}
         >
-          Hola
+          <Text style={{color:'white'}}> 
+            {props.arrayUsuarios != undefined?props.arrayUsuarios[users[index]].correo:"usuario"}
+          </Text>
         </Chip>
         </Card.Content>
 
@@ -42,7 +70,7 @@ function Lista (props){
         //<Chip avatar key={item.producto} onPress={() => console.log('Pressed')}>{item.cantidad} x {item.producto} - Unitario:{item.costo} USD / total:{item.cantidad*item.costo} USD</Chip>
 
     );
-
+    
     return(
       <>
         <ScrollView> 
@@ -75,18 +103,28 @@ export default class Carrito extends React.Component{
 
     constructor (){
       super();
-      this.state = {contador:1};
+      this.state = {contador:1,
+      posUsuarios:[],
+      suma:0,
+      listado:[]
+      };
     }
 
     render(){
 
         const { listaArray } = this.props.route.params;
+        const { usuarios } = this.props.route.params;
+        const { colores } = this.props.route.params;
         //const { comercio } = this.props.route.params;
         let deshabilitar = true;
+        //this.setState({posUsuario:usuarios, listado:listaArray});
+        console.log(usuarios);
+        
+        
         (listaArray==undefined || listaArray.length<1) ? deshabilitar = true : deshabilitar = false;
             
               return (
-                <Lista lista={listaArray} navegar={this.props.navigation} disable={deshabilitar}/>
+                <Lista lista={listaArray} navegar={this.props.navigation} disable={deshabilitar} arrayUsuarios={usuarios} arrayColores={colores}/>
               );
       }
 }
