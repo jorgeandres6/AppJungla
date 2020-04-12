@@ -10,6 +10,7 @@ import Producto from './Producto';
 import Carrito from './CarritoCompras';
 import Split from './Split';
 import Eliminar from './EliminarItem';
+import Modo from './Modal';
 
 const Stack = createStackNavigator();
 
@@ -25,6 +26,7 @@ function MyStack() {
           <Stack.Screen name="Carrito" component={Carrito} />
           <Stack.Screen name="Split" component={Split} />
           <Stack.Screen name="Eliminar" component={Eliminar} />
+          <Stack.Screen name="Modo" component={Modo} />
         </Stack.Navigator>
       </NavigationContainer>
     );

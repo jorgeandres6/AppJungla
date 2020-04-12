@@ -1,8 +1,135 @@
 import React, {useState} from 'react';
-import { ScrollView, View, ActivityIndicator, Text } from 'react-native';
-import { Chip, Button, Paragraph, Card, Title} from 'react-native-paper';
-import { Provider as PaperProvider } from 'react-native-paper';
-import { getMenu } from './httpService';
+import { ScrollView, View, Modal, Text} from 'react-native';
+import { Chip, Button, Paragraph, Card, Subheading, Title, Portal, Provider} from 'react-native-paper';
+
+function Totales (props){
+
+  const [modalVisible, setModalVisible] = useState(false);
+  //const [cuentasfin, setCuentasfin] = useState([{usuario:'Usuario',total:0},{usuario:'Usuario',total:0}]);
+
+  //cuentas.fill(0);
+
+  //let usuario = new Object();
+
+  let cuentasfin = [{usuario:'Usuario',subtotal:0,utilidad:0,total:0}];
+
+  const porcentajeUtilidad = 0.1;
+
+  if (props.usuarios != undefined){
+    let cuentas = new Array(props.usuarios.length);
+    let totales = new Array(props.usuarios.length);
+    totales.fill(0);
+    let division=0;
+
+    for (let i=0; i<props.lista.length; i++){
+      /*if(i==props.lista.length){
+        division = props.lista[i].total/props.lista.length;
+        totales[props.arrayUsers[i]] = totales[props.arrayUsers[i]] + division;
+      }*/
+      //console.log(props.arrayUsers[i]);
+      //console.log(props.lista[i].total);
+      totales[props.arrayUsers[i]] = totales[props.arrayUsers[i]] + props.lista[i].total;
+    }
+
+    let divisionAux=(totales[props.lista.length-1]/(props.usuarios.length-1)).toFixed(2);
+
+    division = parseFloat(divisionAux);
+
+    console.log (typeof division);
+    
+    for (let j=0; j<props.usuarios.length; j++){
+      cuentas[j] = {usuario:props.usuarios[j].correo, subtotal:parseFloat(totales[j])+division, utilidad:((parseFloat(totales[j])+division)*porcentajeUtilidad).toFixed(2), total:((parseFloat(totales[j])+division)*(1+porcentajeUtilidad)).toFixed(2)};
+    };
+    cuentasfin = cuentas.slice(0,cuentas.length-1);
+    //console.log(cuentas);
+    //setCuentasfin(cuentas);
+  }else{
+    //let cuentas = new Array(1);
+    let totales = 0;
+    for (let i=0; i<props.lista.length; i++){
+      totales = totales + props.lista[i].total;
+    }
+    //let cuentas = [{usuario:"usuario", total:totales}];
+    //setCuentasfin(cuentas);
+    cuentasfin[0].subtotal = totales;
+    cuentasfin[0].utilidad = totales*porcentajeUtilidad;
+    cuentasfin[0].total = totales*(1+porcentajeUtilidad);
+  }
+  
+
+  //let cuentas = 0;
+
+  
+    /*for (let i=0; i<props.lista.length; i++){
+      cuentas=cuentas+props.lista[i].total;
+      console.log(cuentas);
+    };*/
+
+    //setCuentasfin([{usario:'hola', total:5}]);
+
+    
+
+  const resumen = cuentasfin.map((item) => 
+    <View key={item.usuario}>
+      <Text>Usuario: {item.usuario}</Text>
+      <Text>Subtotal: ${item.subtotal} USD</Text> 
+      <Text>Servicio {porcentajeUtilidad*100}%: ${item.utilidad} USD</Text> 
+      <Text>Total: ${item.total} USD</Text>      
+    </View>
+  );
+  
+  return (
+    <>
+       <View style={{flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22}}> 
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+          }}
+        >
+          <View style={{flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: 22}}>
+            <View style={{
+             margin: 20,
+             backgroundColor: "white",
+             borderRadius: 20,
+             padding: 35,
+             alignItems: "center",
+             shadowColor: "#000",
+             shadowOffset: {width: 0,height: 2},
+
+             }}>
+              <Subheading>
+                Cuenta final:
+              </Subheading>
+              {resumen}
+              <Button onPress={() => {
+              setModalVisible(false);
+              }}
+              icon="arrow-left-bold-outline">
+                Cerrar
+              </Button>
+            </View>
+          </View>
+        </Modal>
+        </View>
+    <Button onPress={() => {
+      setModalVisible(true);
+      }}
+      icon="cash-usd">
+        Ver detalle de cuentas
+    </Button>
+    </>
+  );
+}
+
 
 function Lista (props){ 
 
@@ -76,9 +203,11 @@ function Lista (props){
         <ScrollView> 
           {menu}
         </ScrollView>
+        <Totales lista={props.lista} usuarios={props.arrayUsuarios} arrayUsers={users}/>
         <View>
           <Button
-          onPress={() => props.navegar.navigate('Carrito',{listaArray:props.lista})}
+         //onPress={() => props.navegar.navigate('Carrito',{listaArray:props.lista})}
+         onPress={() => props.navegar.navigate('Modo')}
           icon="cash-multiple"
           mode="outlined"
           disabled= {props.disable}
@@ -118,7 +247,7 @@ export default class Carrito extends React.Component{
         //const { comercio } = this.props.route.params;
         let deshabilitar = true;
         //this.setState({posUsuario:usuarios, listado:listaArray});
-        console.log(usuarios);
+        //console.log(usuarios);
         
         
         (listaArray==undefined || listaArray.length<1) ? deshabilitar = true : deshabilitar = false;

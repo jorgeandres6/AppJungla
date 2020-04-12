@@ -47,7 +47,7 @@ export default class Seleccion extends React.Component{
 
           if (this.state.productos.length < 1){
             return (
-              <View style={{justifyContent:'space-around', alignItems:'center'}}>
+              <View style={{justifyContent:'center', alignItems:'center', flex:1}}>
                 <ActivityIndicator size="large" color="#0000ff" />
               </View>
             );

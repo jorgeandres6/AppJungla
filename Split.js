@@ -60,6 +60,12 @@ export default class Split extends React.Component{
               onChangeText={text => this.setState({text})}
               value={this.state.text}
               mode="outlined"
+              autoCapitalize="none"
+              autoCompleteType="email"
+              autoFocus={true}
+              clearButtonMode="always"
+              keyboardType="email-address"
+              textContentType="emailAddress"
             />
             <Button
             onPress={() => {
@@ -75,7 +81,15 @@ export default class Split extends React.Component{
               Agregar compañero
             </Button>
             <Button
-            onPress={() => this.props.navigation.navigate('Carrito',{usuarios:this.state.usuarios, colores:this.state.colores})}
+            onPress={() => {
+
+              let users = this.state.usuarios.slice();
+              users.push({correo:'dividido'});
+              this.props.navigation.navigate('Carrito',{usuarios:users, colores:this.state.colores})}	
+
+
+            }
+              
             //onPress={() => console.log(this.state.usuarios)}
             icon="cart-outline"
             mode="outlined"
