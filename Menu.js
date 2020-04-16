@@ -7,10 +7,11 @@ function Menu (props){
 
     const menu = props.menu.map((item) =>
       <Card
-        onPress={() => props.navegar.navigate('Producto',{nombre:item.nombre,descripcion:item.descripcion,precio:item.precio,listaArray:props.lista})}
+        onPress={() => props.navegar.navigate('Producto',{nombre:item.nombre,descripcion:item.descripcion,precio:item.precio,listaArray:props.lista,local:props.local})}
         //onPress={() => this.setState({productos2:this.state.productos[0].nombre})}
         //style={{backgroundColor:'red'}}
         key={item.nombre}
+        
        >
        <Card.Content>
         <Title style={{fontWeight:'bold'}}>{item.nombre}</Title>

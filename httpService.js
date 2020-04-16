@@ -14,3 +14,10 @@ export function addUsuarios (usuario){
   //return axios.get('https://jungla-caf2d.firebaseio.com/usuarios.json?orderBy="correo"&equalTo="'+usuario+'"&print=pretty');
   return axios.get('https://jungla-caf2d.firebaseio.com/usuarios.json?orderBy="correo"&equalTo="'+usuario+'"');
 }
+
+export function updateCantidad (index,cantidad){
+  axios.patch("https://basededatos-2127f.firebaseio.com/productos/"+index+"/.json",
+  {
+    "unidades" : cantidad
+  })
+}

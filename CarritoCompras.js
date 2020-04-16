@@ -4,6 +4,9 @@ import { Chip, Button, Paragraph, Card, Subheading, Title, Portal, Provider} fro
 
 function Totales (props){
 
+  //console.log("Prueba");
+  //console.log(props.lista.comercio);
+
   const [modalVisible, setModalVisible] = useState(false);
   //const [cuentasfin, setCuentasfin] = useState([{usuario:'Usuario',total:0},{usuario:'Usuario',total:0}]);
 
@@ -14,12 +17,14 @@ function Totales (props){
   let cuentasfin = [{usuario:'Usuario',subtotal:0,utilidad:0,total:0}];
 
   const porcentajeUtilidad = 0.1;
+  
+  let listaArray = props.lista.slice();
 
   if (props.usuarios != undefined){
     let cuentas = new Array(props.usuarios.length);
     let totales = new Array(props.usuarios.length);
     totales.fill(0);
-    let division=0;
+    let division=1;
 
     for (let i=0; i<props.lista.length; i++){
       /*if(i==props.lista.length){
@@ -28,17 +33,18 @@ function Totales (props){
       }*/
       //console.log(props.arrayUsers[i]);
       //console.log(props.lista[i].total);
+      listaArray[i].nombreUsuario = props.usuarios[props.arrayUsers[i]].correo;
       totales[props.arrayUsers[i]] = totales[props.arrayUsers[i]] + props.lista[i].total;
     }
 
-    let divisionAux=(totales[props.lista.length-1]/(props.usuarios.length-1)).toFixed(2);
+    let divisionAux=(totales[props.lista.length]/(props.usuarios.length-1)).toFixed(2);
 
-    division = parseFloat(divisionAux);
+    props.usuarios.length > 2 ? division = parseFloat(divisionAux): division = 1;
 
-    console.log (typeof division);
+    //console.log (typeof division);
     
     for (let j=0; j<props.usuarios.length; j++){
-      cuentas[j] = {usuario:props.usuarios[j].correo, subtotal:parseFloat(totales[j])+division, utilidad:((parseFloat(totales[j])+division)*porcentajeUtilidad).toFixed(2), total:((parseFloat(totales[j])+division)*(1+porcentajeUtilidad)).toFixed(2)};
+      cuentas[j] = {usuario:props.usuarios[j].correo, subtotal:(parseFloat(totales[j])+division).toFixed(2), utilidad:((parseFloat(totales[j])+division)*porcentajeUtilidad).toFixed(2), total:((parseFloat(totales[j])+division)*(1+porcentajeUtilidad)).toFixed(2), servicio:porcentajeUtilidad, comercio:props.lista.comercio};
     };
     cuentasfin = cuentas.slice(0,cuentas.length-1);
     //console.log(cuentas);
@@ -51,9 +57,11 @@ function Totales (props){
     }
     //let cuentas = [{usuario:"usuario", total:totales}];
     //setCuentasfin(cuentas);
-    cuentasfin[0].subtotal = totales;
-    cuentasfin[0].utilidad = totales*porcentajeUtilidad;
-    cuentasfin[0].total = totales*(1+porcentajeUtilidad);
+    cuentasfin[0].subtotal = totales.toFixed(2);
+    cuentasfin[0].utilidad = (totales*porcentajeUtilidad).toFixed(2);
+    cuentasfin[0].total = (totales*(1+porcentajeUtilidad)).toFixed(2);
+    cuentasfin[0].servicio = porcentajeUtilidad; 
+    cuentasfin[0].comercio = props.lista.comercio;
   }
   
 
@@ -126,6 +134,15 @@ function Totales (props){
       icon="cash-usd">
         Ver detalle de cuentas
     </Button>
+    <Button
+         //onPress={() => props.navegar.navigate('Carrito',{listaArray:props.lista})}
+         onPress={() => props.navegar.navigate('Checkout',{cuenta:cuentasfin, lista:listaArray})}
+          icon="cash-multiple"
+          mode="outlined"
+          disabled= {props.disable}
+          >
+            Proceder al checkout
+          </Button>
     </>
   );
 }
@@ -203,17 +220,8 @@ function Lista (props){
         <ScrollView> 
           {menu}
         </ScrollView>
-        <Totales lista={props.lista} usuarios={props.arrayUsuarios} arrayUsers={users}/>
+        <Totales lista={props.lista} usuarios={props.arrayUsuarios} arrayUsers={users} navegar={props.navegar}/>
         <View>
-          <Button
-         //onPress={() => props.navegar.navigate('Carrito',{listaArray:props.lista})}
-         onPress={() => props.navegar.navigate('Modo')}
-          icon="cash-multiple"
-          mode="outlined"
-          disabled= {props.disable}
-          >
-            Proceder al pago
-          </Button>
           <Button
             onPress={() => props.navegar.navigate('Split')}
             icon="account-group"
