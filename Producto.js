@@ -19,7 +19,7 @@ export default class Producto extends React.Component{
       if (this.state.contador > 1){
         this.setState({contador:this.state.contador-1});
       }
-      console.log(this.state.lista);
+      //console.log(this.state.lista);
     }
 
     agregarCarrito = () => {

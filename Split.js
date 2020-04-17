@@ -86,8 +86,6 @@ export default class Split extends React.Component{
               let users = this.state.usuarios.slice();
               users.push({correo:'dividido'});
               this.props.navigation.navigate('Carrito',{usuarios:users, colores:this.state.colores})}	
-
-
             }
               
             //onPress={() => console.log(this.state.usuarios)}

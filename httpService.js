@@ -15,9 +15,21 @@ export function addUsuarios (usuario){
   return axios.get('https://jungla-caf2d.firebaseio.com/usuarios.json?orderBy="correo"&equalTo="'+usuario+'"');
 }
 
-export function updateCantidad (index,cantidad){
-  axios.patch("https://basededatos-2127f.firebaseio.com/productos/"+index+"/.json",
+export function registrarTicket (objeto,fecha){
+
+    var date = new Date().getDate(); //Current Date
+    var month = new Date().getMonth() + 1; //Current Month
+    var year = new Date().getFullYear(); //Current Year
+    var hours = new Date().getHours(); //Current Hours
+    var min = new Date().getMinutes(); //Current Minutes
+    var sec = new Date().getSeconds(); //Current Seconds
+    that.setState({
+      //Setting the value of the date time
+      date:
+        date + '/' + month + '/' + year + ' ' + hours + ':' + min + ':' + sec,
+    });
+  axios.put('https://jungla-caf2d.firebaseio.com/recibos/'+objeto.correo+'.json',
   {
-    "unidades" : cantidad
+    "unidades" : objeto
   })
 }

@@ -37,11 +37,13 @@ function Totales (props){
       totales[props.arrayUsers[i]] = totales[props.arrayUsers[i]] + props.lista[i].total;
     }
 
-    let divisionAux=(totales[props.lista.length]/(props.usuarios.length-1)).toFixed(2);
+    let divisionAux=(totales[props.usuarios.length-1]/(props.usuarios.length-1)).toFixed(2);
+
+    //console.log(totales[props.usuarios.length]);
 
     props.usuarios.length > 2 ? division = parseFloat(divisionAux): division = 1;
 
-    //console.log (typeof division);
+    //console.log (division);
     
     for (let j=0; j<props.usuarios.length; j++){
       cuentas[j] = {usuario:props.usuarios[j].correo, subtotal:(parseFloat(totales[j])+division).toFixed(2), utilidad:((parseFloat(totales[j])+division)*porcentajeUtilidad).toFixed(2), total:((parseFloat(totales[j])+division)*(1+porcentajeUtilidad)).toFixed(2), servicio:porcentajeUtilidad, comercio:props.lista.comercio};
