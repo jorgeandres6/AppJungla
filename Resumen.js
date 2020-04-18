@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { View, Text} from 'react-native';
 import { Button } from 'react-native-paper';
-import { getMenu } from './httpService';
+import { registrarTicket } from './httpService';
 
 function ResumenCuenta (props) {
     
@@ -20,7 +20,9 @@ function ResumenCuenta (props) {
     return(
         <View>
         {resumen}
-        <Button>
+        <Button
+        onPress={() => registrarTicket(props.listaArray, "usuario")}
+        >
             Proceder al pago
         </Button>
         </View>

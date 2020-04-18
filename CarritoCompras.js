@@ -175,7 +175,7 @@ function Lista (props){
         icon="information" 
         onPress={() => {
           
-          if (props.arrayUsuarios != undefined){
+          if (props.arrayUsuarios != undefined && props.arrayUsuarios.length > 2){
 
             /*item.usuario++;
             if(item.usuario > props.arrayUsuarios.length-1){

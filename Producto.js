@@ -32,7 +32,7 @@ export default class Producto extends React.Component{
       if (listaArray!=undefined){
         carrito=listaArray.slice();
       }
-      let articulo = {producto:nombre,cantidad:this.state.contador,costo:precio,comercio:local,total:ptotal,usuario:0,nombreUsuario:"usuario"};
+      let articulo = {producto:nombre,cantidad:this.state.contador,costo:precio,comercio:local,total:ptotal,usuario:0,nombreUsuario:"usuario",pagoConfirmado:false};
       carrito.push(articulo);
       console.log(carrito);
       this.props.navigation.navigate('Carta',{listaArray:carrito});

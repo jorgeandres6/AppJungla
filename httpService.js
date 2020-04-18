@@ -15,7 +15,7 @@ export function addUsuarios (usuario){
   return axios.get('https://jungla-caf2d.firebaseio.com/usuarios.json?orderBy="correo"&equalTo="'+usuario+'"');
 }
 
-export function registrarTicket (objeto,fecha){
+export function registrarTicket (objeto,usuario){
 
     var date = new Date().getDate(); //Current Date
     var month = new Date().getMonth() + 1; //Current Month
@@ -23,13 +23,9 @@ export function registrarTicket (objeto,fecha){
     var hours = new Date().getHours(); //Current Hours
     var min = new Date().getMinutes(); //Current Minutes
     var sec = new Date().getSeconds(); //Current Seconds
-    that.setState({
-      //Setting the value of the date time
-      date:
-        date + '/' + month + '/' + year + ' ' + hours + ':' + min + ':' + sec,
-    });
-  axios.put('https://jungla-caf2d.firebaseio.com/recibos/'+objeto.correo+'.json',
+  
+  axios.put('https://jungla-caf2d.firebaseio.com/recibos/'+usuario+'/'+year+'/'+month+'/'+date+'/'+hours+min+sec+'.json',
   {
-    "unidades" : objeto
+    objeto
   })
 }
