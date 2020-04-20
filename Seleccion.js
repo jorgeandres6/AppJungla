@@ -1,7 +1,6 @@
 import React from 'react';
 import { ScrollView, View, Text, ActivityIndicator } from 'react-native';
 import { Card, Title, Paragraph, Colors} from 'react-native-paper';
-import { Provider as PaperProvider } from 'react-native-paper';
 import { getProductos } from './httpService';
 
 function Locales (props){
@@ -35,10 +34,19 @@ export default class Seleccion extends React.Component{
     this.state = {productos:[]};
   }
 
-  componentDidMount (){
+  /*componentDidMount (){
     getProductos().then(response => {
       this.setState({productos:response.data});
       //console.log(this.state.productos);
+      //this.setState({productos2:'response.data'});
+    });
+  }*/
+
+  componentDidMount (){
+    getProductos().then((dataSnapshot) => {
+      //console.log(dataSnapshot.val());
+      this.setState({productos:dataSnapshot.val()});
+      console.log(this.state.productos);
       //this.setState({productos2:'response.data'});
     });
   }

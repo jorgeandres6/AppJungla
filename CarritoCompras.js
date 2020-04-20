@@ -138,7 +138,7 @@ function Totales (props){
     </Button>
     <Button
          //onPress={() => props.navegar.navigate('Carrito',{listaArray:props.lista})}
-         onPress={() => props.navegar.navigate('Checkout',{cuenta:cuentasfin, lista:listaArray})}
+         onPress={() => props.navegar.navigate('Checkout',{cuenta:cuentasfin, lista:listaArray, users:props.usuarios})}
           icon="cash-multiple"
           mode="outlined"
           disabled= {props.disable}

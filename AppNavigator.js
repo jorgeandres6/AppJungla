@@ -1,7 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import { Button} from 'react-native-paper';
 import Seleccion from './Seleccion';
 import Registro from './Registro';
 import Login from './Login';

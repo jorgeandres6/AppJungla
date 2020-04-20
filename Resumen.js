@@ -5,7 +5,7 @@ import { registrarTicket } from './httpService';
 
 function ResumenCuenta (props) {
     
-    console.log(props.listaArray);
+    console.log(props.usuarios);
 
     const resumen = props.cuentasfin.map((item) => 
         <View key={item.usuario}>
@@ -21,7 +21,7 @@ function ResumenCuenta (props) {
         <View>
         {resumen}
         <Button
-        onPress={() => registrarTicket(props.listaArray, "usuario")}
+        onPress={() => registrarTicket(props.listaArray, props.usuarios)}
         >
             Proceder al pago
         </Button>
@@ -44,10 +44,11 @@ export default class Resumen extends React.Component{
         
         const { cuenta } = this.props.route.params;
         const { lista } = this.props.route.params;
+        const { users } = this.props.route.params;
 
         return(
 
-            <ResumenCuenta cuentasfin={cuenta} listaArray={lista}/>
+            <ResumenCuenta cuentasfin={cuenta} listaArray={lista} usuarios={users}/>
 
         );
     }
