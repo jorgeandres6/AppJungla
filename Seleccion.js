@@ -46,7 +46,7 @@ export default class Seleccion extends React.Component{
     getProductos().then((dataSnapshot) => {
       //console.log(dataSnapshot.val());
       this.setState({productos:dataSnapshot.val()});
-      console.log(this.state.productos);
+      //console.log(this.state.productos);
       //this.setState({productos2:'response.data'});
     });
   }

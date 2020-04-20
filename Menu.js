@@ -51,9 +51,9 @@ export default class Carta extends React.Component{
     componentDidMount (){
      const { comercio } = this.props.route.params;
      //console.log(comercio);
-     getMenu(comercio).then(response => {
+     getMenu(comercio).then(dataSnapshot => {
      //getMenu('W').then(response => {
-     this.setState({productos:response.data});
+     this.setState({productos:dataSnapshot.val()});
         //console.log(this.state.productos);
         //this.setState({productos2:'response.data'});
       });

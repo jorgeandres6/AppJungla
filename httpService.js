@@ -1,21 +1,6 @@
 //import React from 'react';
 import axios from 'axios';
-//import {db} from './ConfigFB';
-import Firebase from 'firebase';
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCgfFaV3By2FMVbGyKDFosklrcV4THGfpY",
-  authDomain: "jungla-caf2d.firebaseapp.com",
-  databaseURL: "https://jungla-caf2d.firebaseio.com",
-  projectId: "jungla-caf2d",
-  storageBucket: "jungla-caf2d.appspot.com",
-  messagingSenderId: "344517426100",
-  appId: "1:344517426100:web:a3929aad1d9046bdeb90e1",
-  measurementId: "G-64S3S9ZZM3"
-};
-
-let app = Firebase.initializeApp(firebaseConfig);
-const db = app.database();
+import {db} from './config';
 
 export function getProductos (){
     //return fetch('https://basededatos-2127f.firebaseio.com/productos/.json', {method:'GET'});
@@ -24,12 +9,14 @@ export function getProductos (){
   }
 
 export function getMenu (comercio){
-  return axios.get('https://jungla-caf2d.firebaseio.com/menu/'+comercio+'.json');
+  //return axios.get('https://jungla-caf2d.firebaseio.com/menu/'+comercio+'.json');
+  return db.ref('/menu/'+comercio).once('value');
 }
 
 export function addUsuarios (usuario){
   //return axios.get('https://jungla-caf2d.firebaseio.com/usuarios.json?orderBy="correo"&equalTo="'+usuario+'"&print=pretty');
-  return axios.get('https://jungla-caf2d.firebaseio.com/usuarios.json?orderBy="correo"&equalTo="'+usuario+'"');
+  //return axios.get('https://jungla-caf2d.firebaseio.com/usuarios.json?orderBy="correo"&equalTo="'+usuario+'"');
+  return db.ref('/usuarios').orderByChild('correo').equalTo(usuario).once('value');
 }
 
 export function registrarTicket (objeto,usuarios){
@@ -42,9 +29,11 @@ export function registrarTicket (objeto,usuarios){
     var sec = new Date().getSeconds(); //Current Seconds
 
     for (var i=0; i<usuarios.length-1; i++){
-      axios.put('https://jungla-caf2d.firebaseio.com/recibos/'+usuarios[i].correo+'/'+year+'/'+month+'/'+date+'/'+hours+min+sec+'.json',
+      /*axios.put('https://jungla-caf2d.firebaseio.com/recibos/'+usuarios[i].correo+'/'+year+'/'+month+'/'+date+'/'+hours+min+sec+'.json',
       {
         objeto
-      });
+      });*/
+
+      return db.ref('/recibos/'+usuarios[i].correo+'/'+year+'/'+month+'/'+date+'/'+hours+min+sec).set(objeto);
     }
 }

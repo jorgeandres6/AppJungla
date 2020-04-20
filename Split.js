@@ -69,9 +69,9 @@ export default class Split extends React.Component{
             />
             <Button
             onPress={() => {
-              addUsuarios(this.state.text).then(response => {
-                //console.log(response.data[Object.keys(response.data)]);
-                response.data[Object.keys(response.data)] != undefined ? this.agregarUsuario(response.data[Object.keys(response.data)]):alert("El usuario no esta registrado");
+              addUsuarios(this.state.text).then(dataSnapshot => {
+                console.log(dataSnapshot.exists());
+                dataSnapshot.val() != null ? this.agregarUsuario(dataSnapshot.val()[Object.keys(dataSnapshot.val())]):alert("El usuario no esta registrado");
                 //this.agregarUsuario(response.data);
               });
             }}
