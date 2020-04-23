@@ -34,7 +34,7 @@ export default class Split extends React.Component{
       super();
       this.state ={
         colores:['grey','orangered','darkmagenta','midnightblue','darkgreen','sienna','deeppink','lightslategrey','mediumvioletred','orange'],
-        usuarios:[{correo:'usuario'}],
+        usuarios:[{correo:'usuario', nombre:'usuario'}],
         text:''
       }
     }
@@ -84,7 +84,7 @@ export default class Split extends React.Component{
             onPress={() => {
 
               let users = this.state.usuarios.slice();
-              users.push({correo:'dividido'});
+              users.push({correo:'dividido', nombre:'dividido'});
               this.props.navigation.navigate('Carrito',{usuarios:users, colores:this.state.colores})}	
             }
               

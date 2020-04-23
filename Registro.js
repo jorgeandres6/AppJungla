@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Alert } from 'react-native';
 import { Button, TextInput} from 'react-native-paper';
-import { Provider as PaperProvider } from 'react-native-paper';
+import Firebase from 'firebase';
 
 function alerta (){
     Alert.alert(
@@ -22,6 +22,17 @@ function alerta (){
 
 export default class Registro extends React.Component{
 
+  constructor (){
+    super();
+    this.state = {
+      email:'',
+      password:'',
+      nombre:'',
+      apellido:'',
+      confPassword:''
+    };
+  }
+
     render(){
         return (
             <View style={{ flex: 1, alignItems:'stretch', justifyContent: 'space-around' }}>
@@ -31,42 +42,51 @@ export default class Registro extends React.Component{
                   label = "Correo"
                   //placeholder="Usuario"
                   keyboardType = 'email-address'
-                  //onChangeText={(text) => this.setState({text})}
-                  //value={this.state.text}
+                  onChangeText={(text) => this.setState({email:text})}
+                  value={this.state.email}
+                  autoCapitalize="none"
+                  autoCompleteType="email"
+                  autoFocus={true}
+                  clearButtonMode="always"
+                  textContentType="emailAddress"
                 />
         
                 <TextInput
                 
                   //style={{alignSelf: 'center'}}
                   label="Nombre"
-                  secureTextEntry = {true}
-                  //onChangeText={(text) => this.setState({text})}
-                  //value={this.state.text}
+                  onChangeText={(text) => this.setState({nombre:text})}
+                  value={this.state.nombre}
+                  clearButtonMode="always"
                 />
         
                 <TextInput
                 
                 //style={{alignSelf: 'center'}}
                 label="Apellido"
-                secureTextEntry = {true}
-                //onChangeText={(text) => this.setState({text})}
-                //value={this.state.text}
+                onChangeText={(text) => this.setState({apellido:text})}
+                value={this.state.apellido}
+                clearButtonMode="always"
               />  
         
                <TextInput
                   //style={{alignSelf: 'center'}}
                   label="Contraseña"
                   secureTextEntry = {true}
-                  //onChangeText={(text) => this.setState({text})}
-                  //value={this.state.text}
+                  onChangeText={(text) => this.setState({password:text})}
+                  value={this.state.password}
+                  clearButtonMode="always"
+                  autoCapitalize="none"
                 />
         
                  <TextInput
                   //style={{alignSelf: 'center'}}
                   label="Confirmar contraseña"
                   secureTextEntry = {true}
-                  //onChangeText={(text) => this.setState({text})}
-                  //value={this.state.text}
+                  onChangeText={(text) => this.setState({confPassword:text})}
+                  value={this.state.confPassword}
+                  clearButtonMode="always"
+                  autoCapitalize="none"
                 />  
         
                 <Button
@@ -74,7 +94,30 @@ export default class Registro extends React.Component{
                 //title="Login"
                 mode="text"
                 color="red"
-                onPress={() => this.alerta}
+                onPress={() => {
+                  if(this.state.password == this.state.confPassword){
+                    Firebase.auth().createUserWithEmailAndPassword(this.state.email,this.state.password).then(
+                      userCredentials => {
+                        alert('Usuario creado exitosamente!');
+                        this.setState({
+                          password:'',
+                          confPassword:'',
+                          nombre:'',
+                          apellido:''
+                        })
+                        userCredentials.user.updateProfile({
+                          displayName: this.state.nombre +" "+ this.state.apellido
+                        })
+                        this.props.navigation.navigate('Bares y Discos');
+                      }
+                    ).catch(
+                      error => {alert(error)}
+                    )
+                  }else{
+                    alert('La contraseña no es igual a su confirmación');
+                  }
+                }
+              }
               >
                   Registrame
                 </Button>

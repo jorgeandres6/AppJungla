@@ -33,7 +33,8 @@ export function registrarTicket (objeto,usuarios){
       {
         objeto
       });*/
-
-      return db.ref('/recibos/'+usuarios[i].correo+'/'+year+'/'+month+'/'+date+'/'+hours+min+sec).set(objeto);
+      console.log(usuarios[i].nombre);
+      //return db.ref('/recibos/'+usuarios[i].correo+'/'+year+'/'+month+'/'+date+'/'+hours+min+sec).push(objeto);
+      db.ref('/recibos/'+usuarios[i].nombre+'/'+year+'/'+month+'/'+date).push(objeto);
     }
 }
