@@ -45,7 +45,7 @@ export default class Registro extends React.Component{
                   onChangeText={(text) => this.setState({email:text})}
                   value={this.state.email}
                   autoCapitalize="none"
-                  autoCompleteType="email"
+                  autocompletetype="email"
                   autoFocus={true}
                   clearButtonMode="always"
                   textContentType="emailAddress"
@@ -98,17 +98,27 @@ export default class Registro extends React.Component{
                   if(this.state.password == this.state.confPassword){
                     Firebase.auth().createUserWithEmailAndPassword(this.state.email,this.state.password).then(
                       userCredentials => {
-                        alert('Usuario creado exitosamente!');
+                        Firebase.auth().currentUser.sendEmailVerification().then(
+
+                         () =>  {
+                           alert('Usuario creado exitosamente!');
+                           userCredentials.user.updateProfile({
+                            displayName: this.state.nombre +" "+ this.state.apellido
+                          })
+                          this.props.navigation.navigate('Bares y Discos');
+                          }
+
+                        ).catch(
+
+                          (error) => {alert(error)}
+
+                        );
                         this.setState({
                           password:'',
                           confPassword:'',
                           nombre:'',
                           apellido:''
                         })
-                        userCredentials.user.updateProfile({
-                          displayName: this.state.nombre +" "+ this.state.apellido
-                        })
-                        this.props.navigation.navigate('Bares y Discos');
                       }
                     ).catch(
                       error => {alert(error)}
