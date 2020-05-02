@@ -1,6 +1,6 @@
 import React from 'react';
-import { ScrollView, View, Text, ActivityIndicator } from 'react-native';
-import { Card, Title, Paragraph, Button} from 'react-native-paper';
+import { ScrollView, View, Text, ActivityIndicator,Button } from 'react-native';
+import { Card, Title, Paragraph} from 'react-native-paper';
 import { getProductos } from './httpService';
 import Firebase from 'firebase';
 
@@ -62,7 +62,8 @@ export default class Seleccion extends React.Component{
         )
         }
         }
-        >Logout</Button>
+        title='Logout'
+        />
       ),
     });
   }

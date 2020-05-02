@@ -13,10 +13,22 @@ export function getMenu (comercio){
   return db.ref('/menu/'+comercio).once('value');
 }
 
+export function registrarUsuario (correoA,nombreA,apellidoA){
+
+  let iniciales = nombreA.substr(0,1) + apellidoA.substr(0,1);
+
+  var ID = iniciales+Date.now();
+
+  db.ref('/ids/'+ID).set({correo:correoA});
+
+  db.ref('/usuarios/'+ID).set({correo:correoA,nombre:nombreA,apellido:apellidoA});
+
+}
+
 export function addUsuarios (usuario){
   //return axios.get('https://jungla-caf2d.firebaseio.com/usuarios.json?orderBy="correo"&equalTo="'+usuario+'"&print=pretty');
   //return axios.get('https://jungla-caf2d.firebaseio.com/usuarios.json?orderBy="correo"&equalTo="'+usuario+'"');
-  return db.ref('/usuarios').orderByChild('correo').equalTo(usuario).once('value');
+  return db.ref('/ids').orderByChild('correo').equalTo(usuario).once('value');
 }
 
 export function registrarTicket (objeto,usuarios){

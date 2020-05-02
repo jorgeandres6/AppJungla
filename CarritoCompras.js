@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { ScrollView, View, Modal, Text} from 'react-native';
-import { Chip, Button, Paragraph, Card, Subheading, Title, Portal, Provider} from 'react-native-paper';
+import { Chip, Button, Paragraph, Card, Subheading, Title} from 'react-native-paper';
 
 function Totales (props){
 

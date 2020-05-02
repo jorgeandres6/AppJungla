@@ -1,22 +1,21 @@
 import React from 'react';
 import { View, Alert } from 'react-native';
 import { Button, TextInput} from 'react-native-paper';
+import { registrarUsuario } from './httpService';
 import Firebase from 'firebase';
 
 function alerta (){
     Alert.alert(
-      'Alert Title',
-      'My Alert Msg',
+      'Operacion completa',
+      'Usuario creado exitosamente! Revise su correo para confirmarlo por favor',
       [
-        {text: 'Ask me later', onPress: () => console.log('Ask me later pressed')},
         {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {text: 'OK', onPress: () => console.log('OK Pressed')},
+          text: 'OK',
+          onPress: () => this.props.navigation.navigate('Login'),
+          style: 'OK',
+        }
       ],
-      {cancelable: false},
+      {cancelable: false}
     );
   }
 
@@ -29,7 +28,7 @@ export default class Registro extends React.Component{
       password:'',
       nombre:'',
       apellido:'',
-      confPassword:''
+      confPassword:'',
     };
   }
 
@@ -61,13 +60,12 @@ export default class Registro extends React.Component{
                 />
         
                 <TextInput
-                
                 //style={{alignSelf: 'center'}}
                 label="Apellido"
                 onChangeText={(text) => this.setState({apellido:text})}
                 value={this.state.apellido}
                 clearButtonMode="always"
-              />  
+              />    
         
                <TextInput
                   //style={{alignSelf: 'center'}}
@@ -99,13 +97,26 @@ export default class Registro extends React.Component{
                     Firebase.auth().createUserWithEmailAndPassword(this.state.email,this.state.password).then(
                       userCredentials => {
                         Firebase.auth().currentUser.sendEmailVerification().then(
-
                          () =>  {
-                           alert('Usuario creado exitosamente!');
+                           registrarUsuario(this.state.email,this.state.nombre,this.state.apellido);
+                           
                            userCredentials.user.updateProfile({
-                            displayName: this.state.nombre +" "+ this.state.apellido
+                           displayName: this.state.nombre +" "+ this.state.apellido
                           })
-                          this.props.navigation.navigate('Bares y Discos');
+                          this.setState({
+                            password:'',
+                            confPassword:'',
+                            nombre:'',
+                            apellido:'',
+                            email:''
+                          })
+                          Firebase.auth().signOut().then( () => {
+                            alert('Usuario creado exitosamente');
+                            this.props.navigation.navigate('Login');
+                          }
+                          ).catch(
+                            (error) => {alert(error);}
+                          )
                           }
 
                         ).catch(
@@ -113,12 +124,6 @@ export default class Registro extends React.Component{
                           (error) => {alert(error)}
 
                         );
-                        this.setState({
-                          password:'',
-                          confPassword:'',
-                          nombre:'',
-                          apellido:''
-                        })
                       }
                     ).catch(
                       error => {alert(error)}
@@ -126,6 +131,8 @@ export default class Registro extends React.Component{
                   }else{
                     alert('La contraseña no es igual a su confirmación');
                   }
+
+                  //console.log(this.state.nombre.substr(0,1)+this.state.apellido.substr(0,1)+Date.now());
                 }
               }
               >

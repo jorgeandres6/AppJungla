@@ -16,7 +16,12 @@ const Stack = createStackNavigator();
 function MyStack() {
     return (
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login">
+        <Stack.Navigator 
+        initialRouteName="Login"
+        screenOptions={{
+          
+        }}
+        >
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Registro" component={Registro} />
           <Stack.Screen name="Bares y Discos" component={Seleccion}/>
