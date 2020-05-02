@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Modal, Text } from 'react-native';
+import { View, Modal, Text, ActivityIndicator, Alert } from 'react-native';
 import { Button, TextInput, Subheading} from 'react-native-paper';
 import Firebase from 'firebase';
 
@@ -23,7 +23,8 @@ export default class Login extends React.Component{
     this.state ={
       email:'',
       password:'',
-      modalVisible:false
+      modalVisible:false,
+      activityVisible:false
     }
   }
 
@@ -38,6 +39,12 @@ export default class Login extends React.Component{
         return (
           <>
             <View style={{ flex: 1, alignItems:'stretch', justifyContent: 'space-around' }}>
+            <ActivityIndicator 
+                size="large" 
+                color="#0000ff" 
+                animating={this.state.activityVisible}
+                style={{justifyContent :'center', alignSelf:'center', flex:1, position:'absolute', zIndex:1}}
+                />
               <TextInput
                   //style={{alignSelf: 'center'}}
                   mode="outlined"
@@ -66,22 +73,27 @@ export default class Login extends React.Component{
                 mode="text"
                 compact={false}
                 onPress={() => {
-                  
+                  this.setState({activityVisible:true});
                   const unsubscribe = Firebase.auth().onAuthStateChanged((user) => {
                     console.log(user);
                     if (user) {
                       if (user.emailVerified){
+                        this.setState({activityVisible:false});
                         this.props.navigation.navigate('Bares y Discos');
                         unsubscribe();
                       }else{
-                        console.log("Ni cagando")
+                        this.setState({activityVisible:false});
                         this.setState({modalVisible:true});
                         unsubscribe();
                       }
-                    }  
+                    } 
                   })
 
-                  Firebase.auth().signInWithEmailAndPassword(this.state.email,this.state.password).catch(error => {alert(error)});
+                  Firebase.auth().signInWithEmailAndPassword(this.state.email,this.state.password).catch(
+                    error => {
+                      alert(error);
+                      this.setState({activityVisible:false}); 
+                    });
                   
                 }
                   

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Alert } from 'react-native';
+import { View, Alert, ActivityIndicator } from 'react-native';
 import { Button, TextInput} from 'react-native-paper';
 import { registrarUsuario } from './httpService';
 import Firebase from 'firebase';
@@ -29,12 +29,20 @@ export default class Registro extends React.Component{
       nombre:'',
       apellido:'',
       confPassword:'',
+      activityVisible:false
     };
   }
 
     render(){
         return (
+          <>
             <View style={{ flex: 1, alignItems:'stretch', justifyContent: 'space-around' }}>
+            <ActivityIndicator 
+                size="large" 
+                color="#0000ff" 
+                animating={this.state.activityVisible}
+                style={{justifyContent :'center', alignSelf:'center', flex:1, position:'absolute', zIndex:1}}
+                />
               <TextInput
                   //style={{alignSelf: 'center'}}
                   mode="outlined"
@@ -93,6 +101,7 @@ export default class Registro extends React.Component{
                 mode="text"
                 color="red"
                 onPress={() => {
+                  this.setState({activityVisible:true});
                   if(this.state.password == this.state.confPassword){
                     Firebase.auth().createUserWithEmailAndPassword(this.state.email,this.state.password).then(
                       userCredentials => {
@@ -113,23 +122,33 @@ export default class Registro extends React.Component{
                           Firebase.auth().signOut().then( () => {
                             alert('Usuario creado exitosamente');
                             this.props.navigation.navigate('Login');
+                            this.setState({activityVisible:false});
                           }
                           ).catch(
-                            (error) => {alert(error);}
+                            (error) => {
+                              this.setState({activityVisible:false});
+                              alert(error);}
+                            
                           )
                           }
 
                         ).catch(
 
-                          (error) => {alert(error)}
+                          (error) => {
+                            this.setState({activityVisible:false});
+                            alert(error)}
 
                         );
                       }
                     ).catch(
-                      error => {alert(error)}
+                      error => {
+                        this.setState({activityVisible:false});
+                        alert(error)}
                     )
+                    //this.setState({activityVisible:false});
                   }else{
                     alert('La contraseña no es igual a su confirmación');
+                    this.setState({activityVisible:false});
                   }
 
                   //console.log(this.state.nombre.substr(0,1)+this.state.apellido.substr(0,1)+Date.now());
@@ -139,6 +158,7 @@ export default class Registro extends React.Component{
                   Registrame
                 </Button>
             </View>
+            </>
           );
     }
 }
