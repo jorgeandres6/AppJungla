@@ -31,22 +31,28 @@ export function addUsuarios (usuario){
   return db.ref('/ids').orderByChild('correo').equalTo(usuario).once('value');
 }
 
-export function registrarTicket (objeto,usuarios){
+export function registrarTicket (objeto,ids,totales){
 
     var date = new Date().getDate(); //Current Date
     var month = new Date().getMonth() + 1; //Current Month
     var year = new Date().getFullYear(); //Current Year
     var hours = new Date().getHours(); //Current Hours
     var min = new Date().getMinutes(); //Current Minutes
-    var sec = new Date().getSeconds(); //Current Seconds
+    //var sec = new Date().getSeconds(); //Current Seconds
 
-    for (var i=0; i<usuarios.length-1; i++){
+    let ts = 'T'+Date.now();
+
+    let fecha = year+'/'+month+'/'+date+' '+hours+':'+min;
+
+    for (var i=0; i<ids.length; i++){
       /*axios.put('https://jungla-caf2d.firebaseio.com/recibos/'+usuarios[i].correo+'/'+year+'/'+month+'/'+date+'/'+hours+min+sec+'.json',
       {
         objeto
       });*/
-      console.log(usuarios[i].nombre);
+      let ticket = {};
+      Object.assign(ticket,objeto,totales[i]);
+      console.log(ids[i]);
       //return db.ref('/recibos/'+usuarios[i].correo+'/'+year+'/'+month+'/'+date+'/'+hours+min+sec).push(objeto);
-      db.ref('/recibos/'+usuarios[i].nombre+'/'+year+'/'+month+'/'+date).push(objeto);
+      db.ref('/recibos/'+ids[i]+'/'+year+'/'+month+'/'+date+'/'+ts).set(ticket);
     }
 }

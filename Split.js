@@ -35,14 +35,18 @@ export default class Split extends React.Component{
       this.state ={
         colores:['grey','orangered','darkmagenta','midnightblue','darkgreen','sienna','deeppink','lightslategrey','mediumvioletred','orange'],
         usuarios:[{correo:'usuario', nombre:'usuario'}],
-        text:''
+        text:'',
+        ids:[]
       }
     }
 
-    agregarUsuario = (item) =>{
+    agregarUsuario = (item, itemId) =>{
       let arrayUsuario = this.state.usuarios;
       arrayUsuario.push(item);
       this.setState({usuarios:arrayUsuario});
+      let arrayIds = this.state.ids;
+      arrayIds.push(itemId);
+      this.setState({ids:arrayIds});
       this.setState({text:''});
       alert('Usuario '+item.correo+' agregado correctamente')
     }
@@ -70,9 +74,10 @@ export default class Split extends React.Component{
             <Button
             onPress={() => {
               addUsuarios(this.state.text).then(dataSnapshot => {
-                console.log(dataSnapshot.exists());
-                dataSnapshot.val() != null ? this.agregarUsuario(dataSnapshot.val()[Object.keys(dataSnapshot.val())]):alert("El usuario no esta registrado");
+                //console.log(Object.getOwnPropertyNames(dataSnapshot.val())[0]);
+                dataSnapshot.val() != null ? this.agregarUsuario(dataSnapshot.val()[Object.keys(dataSnapshot.val())],Object.getOwnPropertyNames(dataSnapshot.val())[0]):alert("El usuario no esta registrado");
                 //this.agregarUsuario(response.data);
+                //console.log(this.state.ids);
               });
             }}
             icon="account-plus-outline"
@@ -85,7 +90,7 @@ export default class Split extends React.Component{
 
               let users = this.state.usuarios.slice();
               users.push({correo:'dividido', nombre:'dividido'});
-              this.props.navigation.navigate('Carrito',{usuarios:users, colores:this.state.colores})}	
+              this.props.navigation.navigate('Carrito',{usuarios:users, colores:this.state.colores, ids:this.state.ids})}	
             }
               
             //onPress={() => console.log(this.state.usuarios)}

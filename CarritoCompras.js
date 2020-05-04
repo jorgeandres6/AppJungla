@@ -2,10 +2,12 @@ import React, {useState} from 'react';
 import { ScrollView, View, Modal, Text} from 'react-native';
 import { Chip, Button, Paragraph, Card, Subheading, Title} from 'react-native-paper';
 
+const Context = React.createContext();
+
 function Totales (props){
 
   //console.log("Prueba");
-  //console.log(props.lista.comercio);
+  //console.log(props.lista[0].comercio);
 
   const [modalVisible, setModalVisible] = useState(false);
   //const [cuentasfin, setCuentasfin] = useState([{usuario:'Usuario',total:0},{usuario:'Usuario',total:0}]);
@@ -46,7 +48,7 @@ function Totales (props){
     //console.log (division);
     
     for (let j=0; j<props.usuarios.length; j++){
-      cuentas[j] = {usuario:props.usuarios[j].correo, subtotal:(parseFloat(totales[j])+division).toFixed(2), utilidad:((parseFloat(totales[j])+division)*porcentajeUtilidad).toFixed(2), total:((parseFloat(totales[j])+division)*(1+porcentajeUtilidad)).toFixed(2), servicio:porcentajeUtilidad, comercio:props.lista.comercio};
+      cuentas[j] = {usuario:props.usuarios[j].correo, subtotal:(parseFloat(totales[j])+division).toFixed(2), utilidad:((parseFloat(totales[j])+division)*porcentajeUtilidad).toFixed(2), total:((parseFloat(totales[j])+division)*(1+porcentajeUtilidad)).toFixed(2), servicio:porcentajeUtilidad, comercio:props.lista[0].comercio};
     };
     cuentasfin = cuentas.slice(0,cuentas.length-1);
     //console.log(cuentas);
@@ -63,7 +65,7 @@ function Totales (props){
     cuentasfin[0].utilidad = (totales*porcentajeUtilidad).toFixed(2);
     cuentasfin[0].total = (totales*(1+porcentajeUtilidad)).toFixed(2);
     cuentasfin[0].servicio = porcentajeUtilidad; 
-    cuentasfin[0].comercio = props.lista.comercio;
+    cuentasfin[0].comercio = props.lista[0].comercio;
   }
   
 
@@ -138,7 +140,7 @@ function Totales (props){
     </Button>
     <Button
          //onPress={() => props.navegar.navigate('Carrito',{listaArray:props.lista})}
-         onPress={() => props.navegar.navigate('Checkout',{cuenta:cuentasfin, lista:listaArray, users:props.usuarios})}
+         onPress={() => props.navegar.navigate('Checkout',{cuenta:cuentasfin, lista:listaArray, users:props.usuarios, ids:props.ids})}
           icon="cash-multiple"
           mode="outlined"
           disabled= {props.disable}
@@ -222,7 +224,7 @@ function Lista (props){
         <ScrollView> 
           {menu}
         </ScrollView>
-        <Totales lista={props.lista} usuarios={props.arrayUsuarios} arrayUsers={users} navegar={props.navegar}/>
+        <Totales lista={props.lista} usuarios={props.arrayUsuarios} ids={props.arrayIds} arrayUsers={users} navegar={props.navegar}/>
         <View>
           <Button
             onPress={() => props.navegar.navigate('Split')}
@@ -254,6 +256,7 @@ export default class Carrito extends React.Component{
         const { listaArray } = this.props.route.params;
         const { usuarios } = this.props.route.params;
         const { colores } = this.props.route.params;
+        const { ids } = this.props.route.params;
         //const { comercio } = this.props.route.params;
         let deshabilitar = true;
         //this.setState({posUsuario:usuarios, listado:listaArray});
@@ -263,7 +266,7 @@ export default class Carrito extends React.Component{
         (listaArray==undefined || listaArray.length<1) ? deshabilitar = true : deshabilitar = false;
             
               return (
-                <Lista lista={listaArray} navegar={this.props.navigation} disable={deshabilitar} arrayUsuarios={usuarios} arrayColores={colores}/>
+                <Lista lista={listaArray} navegar={this.props.navigation} disable={deshabilitar} arrayUsuarios={usuarios} arrayColores={colores} arrayIds={ids}/>
               );
       }
 }

@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text} from 'react-native';
 import { Button } from 'react-native-paper';
-import { registrarTicket } from './httpService';
+import { registrarTicket, addUsuarios } from './httpService';
+import Firebase from 'firebase';
 
 function ResumenCuenta (props) {
     
-    console.log(props.usuarios);
+    console.log(props.cuentasfin);
 
     const resumen = props.cuentasfin.map((item) => 
         <View key={item.usuario}>
@@ -21,7 +22,16 @@ function ResumenCuenta (props) {
         <View>
         {resumen}
         <Button
-        onPress={() => registrarTicket(props.listaArray, props.usuarios)}
+        onPress={() => {
+            //console.log(Firebase.auth().currentUser.email);
+            addUsuarios(Firebase.auth().currentUser.email).then(dataSnapshot => {
+                let auxIds = [Object.getOwnPropertyNames(dataSnapshot.val())[0]];
+                let ids= [];
+                props.arrayIds != undefined ? ids = auxIds.concat(props.arrayIds):ids = auxIds;
+                console.log(ids);
+                registrarTicket(props.listaArray, ids, props.cuentasfin);
+              });
+            }}
         >
             Proceder al pago
         </Button>
@@ -45,10 +55,11 @@ export default class Resumen extends React.Component{
         const { cuenta } = this.props.route.params;
         const { lista } = this.props.route.params;
         const { users } = this.props.route.params;
+        const { ids } = this.props.route.params;
 
         return(
 
-            <ResumenCuenta cuentasfin={cuenta} listaArray={lista} usuarios={users}/>
+            <ResumenCuenta cuentasfin={cuenta} listaArray={lista} usuarios={users} arrayIds={ids}/>
 
         );
     }
