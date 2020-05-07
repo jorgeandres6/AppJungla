@@ -1,8 +1,22 @@
 import React, {useState} from 'react';
 import { ScrollView, View, Modal, Text} from 'react-native';
-import { Chip, Button, Paragraph, Card, Subheading, Title} from 'react-native-paper';
+import { Chip, Button, Paragraph, Card, Subheading, Title, FAB} from 'react-native-paper';
 
 const Context = React.createContext();
+
+function BotonFlotante (props){
+  return(
+    <FAB
+    style = {{position: 'absolute', 
+    margin: 16,
+    alignSelf:'center',
+    bottom: 100}}
+    icon="cash-usd"
+    label={"Total: $"+props.total+" USD"}
+    onPress = {() => {props.funcion(props.visibilidad)}}
+  />
+  )
+}
 
 function Totales (props){
 
@@ -132,12 +146,7 @@ function Totales (props){
           </View>
         </Modal>
         </View>
-    <Button onPress={() => {
-      setModalVisible(true);
-      }}
-      icon="cash-usd">
-        Ver detalle de cuentas
-    </Button>
+    <BotonFlotante funcion={setModalVisible} visibilidad={true} total={cuentasfin[0].total}/>
     <Button
          //onPress={() => props.navegar.navigate('Carrito',{listaArray:props.lista})}
          onPress={() => props.navegar.navigate('Checkout',{cuenta:cuentasfin, lista:listaArray, users:props.usuarios, ids:props.ids})}

@@ -79,7 +79,7 @@ export default class Login extends React.Component{
                     if (user) {
                       if (user.emailVerified){
                         this.setState({activityVisible:false});
-                        this.props.navigation.navigate('Bares y Discos');
+                        this.props.navigation.navigate('Seleccion');
                         unsubscribe();
                       }else{
                         this.setState({activityVisible:false});

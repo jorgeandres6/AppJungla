@@ -10,6 +10,7 @@ import Carrito from './CarritoCompras';
 import Split from './Split';
 import Eliminar from './EliminarItem';
 import Resumen from './Resumen';
+import Tipo from './TipoComercio';
 
 const Stack = createStackNavigator();
 
@@ -19,7 +20,7 @@ function MyStack() {
         <Stack.Navigator 
         initialRouteName="Login"
         screenOptions={{
-          
+            headerTitleAlign:'center'
         }}
         >
           <Stack.Screen name="Login" component={Login} />
@@ -31,6 +32,7 @@ function MyStack() {
           <Stack.Screen name="Split" component={Split} />
           <Stack.Screen name="Eliminar" component={Eliminar} />
           <Stack.Screen name="Checkout" component={Resumen} />
+          <Stack.Screen name="Seleccion" component={Tipo} />
         </Stack.Navigator>
       </NavigationContainer>
     );

@@ -1,7 +1,6 @@
 import React from 'react';
-import { ScrollView, View, Text, ActivityIndicator,Button } from 'react-native';
+import { ScrollView, View, Text, ActivityIndicator } from 'react-native';
 import { Card, Title, Paragraph} from 'react-native-paper';
-import { getProductos } from './httpService';
 import Firebase from 'firebase';
 
 function Locales (props){
@@ -35,37 +34,16 @@ export default class Seleccion extends React.Component{
     this.state = {productos:[]};
   }
 
-  /*componentDidMount (){
-    getProductos().then(response => {
-      this.setState({productos:response.data});
-      //console.log(this.state.productos);
-      //this.setState({productos2:'response.data'});
-    });
-  }*/
-
   componentDidMount (){
-    getProductos().then((dataSnapshot) => {
+    //getProductos().then((dataSnapshot) => {
+      const {funcionMuestra} = this.props.route.params;
+      funcionMuestra.then((dataSnapshot) => {
       //console.log(dataSnapshot.val());
       this.setState({productos:dataSnapshot.val()});
       //console.log(this.state.productos);
       //this.setState({productos2:'response.data'});
     });
     const {email,displayName} = Firebase.auth().currentUser;
-    this.props.navigation.setOptions({
-      headerLeft: () => (
-        <Button onPress={() => {Firebase.auth().signOut().then(
-          () => {
-            this.props.navigation.navigate('Login');
-          }
-        ).catch(
-          (error) => {alert(error)}
-        )
-        }
-        }
-        title='Logout'
-        />
-      ),
-    });
   }
 
     render(){
