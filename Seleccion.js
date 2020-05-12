@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, View, Text, ActivityIndicator } from 'react-native';
+import { ScrollView, View, Text, ActivityIndicator, BackHandler } from 'react-native';
 import { Card, Title, Paragraph} from 'react-native-paper';
 import Firebase from 'firebase';
 
@@ -7,7 +7,8 @@ function Locales (props){
 
   const comercios = props.locales.map((local) =>
     <Card
-      onPress={() => props.navegar.navigate('Carta',{comercio:local.nombre})}
+      onPress={() => {
+        props.navegar.navigate('Carta',{comercio:local.nombre})}}
       //onPress={() => this.setState({productos2:this.state.productos[0].nombre})}
       key={local.nombre}
      >

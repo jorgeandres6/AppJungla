@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Image } from 'react-native';
-import {  IconButton, Paragraph, Text, Colors, Button} from 'react-native-paper';
+import { IconButton, Paragraph, Text, Colors, Button} from 'react-native-paper';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { getProductos } from './httpService';
 
@@ -45,13 +45,13 @@ export default class Producto extends React.Component{
             const { precio } = this.props.route.params;
             const { descripcion } = this.props.route.params;
               return (
-                <View style={{flexDirection:'column', justifyContent:'space-between', alignItems:'center'}}>
+                <View style={{flex:1, flexDirection:'column', alignItems:'center'}}>
                   <Image source={{uri: 'https://picsum.photos/'+Math.floor(Math.random())}}
-                     style={{width:300,height:300}} 
+                     style={{height:200, width:200}} 
                      />
                      <Paragraph style={{fontWeight:'bold'}}>{nombre}</Paragraph>
-                     <Paragraph>{descripcion}</Paragraph>
-                     <Paragraph><Text style={{fontWeight:'bold'}}>Costo por unidad:</Text> {precio} USD</Paragraph>
+                     <Paragraph >{descripcion}</Paragraph>
+                     <Paragraph ><Text style={{fontWeight:'bold'}}>Costo por unidad:</Text> {precio} USD</Paragraph>
                      <IconButton 
                      icon='plus-circle-outline'
                      onPress={this.aumentarCantidad}
@@ -61,15 +61,14 @@ export default class Producto extends React.Component{
                      </Text>
                      <IconButton 
                      icon='minus-circle-outline'
-                     onPress={this.disminuirCantidad}
-                     />
+                     onPress={this.disminuirCantidad}/>
                      <Button
                         mode="contained"
                         compact={false}
                         onPress={this.agregarCarrito}
                         icon="cart-plus"
                      >   
-                        Agregar al carrito
+                        {'Agregar al carrito $'+precio*this.state.contador}
                      </Button>
                 </View>
               );           

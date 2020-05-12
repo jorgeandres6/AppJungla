@@ -75,7 +75,7 @@ export default class Login extends React.Component{
                 onPress={() => {
                   this.setState({activityVisible:true});
                   const unsubscribe = Firebase.auth().onAuthStateChanged((user) => {
-                    console.log(user);
+                    //console.log(user);
                     if (user) {
                       if (user.emailVerified){
                         this.setState({activityVisible:false});
