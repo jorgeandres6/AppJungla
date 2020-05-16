@@ -43,57 +43,34 @@ function Totales (props){
     let division=1;
 
     for (let i=0; i<props.lista.length; i++){
-      /*if(i==props.lista.length){
-        division = props.lista[i].total/props.lista.length;
-        totales[props.arrayUsers[i]] = totales[props.arrayUsers[i]] + division;
-      }*/
-      //console.log(props.arrayUsers[i]);
-      //console.log(props.lista[i].total);
+
       listaArray[i].nombreUsuario = props.usuarios[props.arrayUsers[i]].correo;
       totales[props.arrayUsers[i]] = totales[props.arrayUsers[i]] + props.lista[i].total;
     }
 
     let divisionAux=(totales[props.usuarios.length-1]/(props.usuarios.length-1)).toFixed(2);
 
-    //console.log(totales[props.usuarios.length]);
-
     props.usuarios.length > 2 ? division = parseFloat(divisionAux): division = 1;
 
-    //console.log (division);
     
     for (let j=0; j<props.usuarios.length; j++){
-      cuentas[j] = {usuario:props.usuarios[j].correo, subtotal:(parseFloat(totales[j])+division).toFixed(2), utilidad:((parseFloat(totales[j])+division)*porcentajeUtilidad).toFixed(2), total:((parseFloat(totales[j])+division)*(1+porcentajeUtilidad)).toFixed(2), servicio:porcentajeUtilidad, comercio:props.lista[0].comercio};
+      cuentas[j] = {usuario:props.usuarios[j].correo, subtotal:(parseFloat(totales[j])+division).toFixed(2), utilidad:((parseFloat(totales[j])+division)*porcentajeUtilidad).toFixed(2), total:((parseFloat(totales[j])+division)*(1+porcentajeUtilidad)).toFixed(2), servicio:porcentajeUtilidad, comercio:props.lista[0].comercio, pagado:false};
     };
     cuentasfin = cuentas.slice(0,cuentas.length-1);
-    //console.log(cuentas);
-    //setCuentasfin(cuentas);
+
   }else{
-    //let cuentas = new Array(1);
+
     let totales = 0;
     for (let i=0; i<props.lista.length; i++){
       totales = totales + props.lista[i].total;
     }
-    //let cuentas = [{usuario:"usuario", total:totales}];
-    //setCuentasfin(cuentas);
     cuentasfin[0].subtotal = totales.toFixed(2);
     cuentasfin[0].utilidad = (totales*porcentajeUtilidad).toFixed(2);
     cuentasfin[0].total = (totales*(1+porcentajeUtilidad)).toFixed(2);
     cuentasfin[0].servicio = porcentajeUtilidad; 
     cuentasfin[0].comercio = props.lista[0].comercio;
+    cuentasfin[0].pagado = false;
   }
-  
-
-  //let cuentas = 0;
-
-  
-    /*for (let i=0; i<props.lista.length; i++){
-      cuentas=cuentas+props.lista[i].total;
-      console.log(cuentas);
-    };*/
-
-    //setCuentasfin([{usario:'hola', total:5}]);
-
-    
 
   const resumen = cuentasfin.map((item) => 
     <View key={item.usuario}>
@@ -148,7 +125,6 @@ function Totales (props){
         </View>
     <BotonFlotante funcion={setModalVisible} visibilidad={true} total={cuentasfin[0].total}/>
     <Button
-         //onPress={() => props.navegar.navigate('Carrito',{listaArray:props.lista})}
          onPress={() => props.navegar.navigate('Checkout',{cuenta:cuentasfin, lista:listaArray, users:props.usuarios, ids:props.ids})}
           icon="cash-multiple"
           mode="outlined"
@@ -169,7 +145,7 @@ function Lista (props){
 
     const [users,setUsers] = useState(arrayPos);
 
-    //const [users,setUsers] = useState(0);
+
   
     const menu = props.lista.map((item,index,array) =>
 
@@ -188,12 +164,6 @@ function Lista (props){
           
           if (props.arrayUsuarios != undefined && props.arrayUsuarios.length > 2){
 
-            /*item.usuario++;
-            if(item.usuario > props.arrayUsuarios.length-1){
-              item.usuario=0;
-            }
-            
-            setUsuarios(array);*/
             let auxpos = users.slice(0,users.length);
             auxpos[index]++;        
             if(auxpos[index] > props.arrayUsuarios.length-1){
@@ -213,7 +183,6 @@ function Lista (props){
         <Card.Actions>
           <Button
              onPress={() => props.navegar.navigate('Eliminar',{listaArray:array, indice:index})}
-             //onPress={console.log(array)}
              icon="cart-remove"
              mode="outlined"
           >
@@ -224,13 +193,14 @@ function Lista (props){
         <Card.Cover source={{ uri: 'https://picsum.photos/'+Math.floor(Math.random()) }} />
       </Card>
 
-        //<Chip avatar key={item.producto} onPress={() => console.log('Pressed')}>{item.cantidad} x {item.producto} - Unitario:{item.costo} USD / total:{item.cantidad*item.costo} USD</Chip>
-
+       
     );
     
     return(
       <>
-        <ScrollView> 
+        <ScrollView
+        alwaysBounceVertical={true}
+        > 
           {menu}
         </ScrollView>
         <Totales lista={props.lista} usuarios={props.arrayUsuarios} ids={props.arrayIds} arrayUsers={users} navegar={props.navegar}/>
@@ -266,10 +236,8 @@ export default class Carrito extends React.Component{
         const { usuarios } = this.props.route.params;
         const { colores } = this.props.route.params;
         const { ids } = this.props.route.params;
-        //const { comercio } = this.props.route.params;
         let deshabilitar = true;
-        //this.setState({posUsuario:usuarios, listado:listaArray});
-        //console.log(usuarios);
+        
         
         
         (listaArray==undefined || listaArray.length<1) ? deshabilitar = true : deshabilitar = false;

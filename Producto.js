@@ -1,8 +1,6 @@
 import React from 'react';
 import { View, Image } from 'react-native';
 import { IconButton, Paragraph, Text, Colors, Button} from 'react-native-paper';
-import { Provider as PaperProvider } from 'react-native-paper';
-import { getProductos } from './httpService';
 
 export default class Producto extends React.Component{
 
@@ -19,7 +17,6 @@ export default class Producto extends React.Component{
       if (this.state.contador > 1){
         this.setState({contador:this.state.contador-1});
       }
-      //console.log(this.state.lista);
     }
 
     agregarCarrito = () => {
@@ -32,12 +29,11 @@ export default class Producto extends React.Component{
       if (listaArray!=undefined){
         carrito=listaArray.slice();
       }
-      let articulo = {producto:nombre,cantidad:this.state.contador,costo:precio,comercio:local,total:ptotal,usuario:0,nombreUsuario:"usuario",pagoConfirmado:false};
+      let articulo = {producto:nombre,cantidad:this.state.contador,costo:precio,comercio:local,total:ptotal,usuario:0,nombreUsuario:"usuario"};
       carrito.push(articulo);
       console.log(carrito);
       this.props.navigation.navigate('Carta',{listaArray:carrito});
 
-      //console.log(carrito);
     }
   
       render(){

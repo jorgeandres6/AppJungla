@@ -11,7 +11,7 @@ function Menu (props){
         //onPress={() => this.setState({productos2:this.state.productos[0].nombre})}
         //style={{backgroundColor:'red'}}
         key={item.nombre}
-        
+        //style={{width:"40%"}}
        >
        <Card.Content>
         <Title style={{fontWeight:'bold'}}>{item.nombre}</Title>
@@ -24,7 +24,7 @@ function Menu (props){
   
     return(
       <>
-        <ScrollView> 
+        <ScrollView style={{width:"100%", flexDirection:"row", alignContent:"stretch"}}> 
           {menu}
         </ScrollView>
         <View style={{flexDirection:'row', justifyContent:'space-around'}}>
