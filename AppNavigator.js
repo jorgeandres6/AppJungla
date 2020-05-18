@@ -11,6 +11,8 @@ import Split from './Split';
 import Eliminar from './EliminarItem';
 import Resumen from './Resumen';
 import Tipo from './TipoComercio';
+import Dinero from './Dinero';
+import Pendiente from './Pendiente';
 
 const Stack = createStackNavigator();
 
@@ -33,6 +35,8 @@ function MyStack() {
           <Stack.Screen name="Eliminar" component={Eliminar} />
           <Stack.Screen name="Checkout" component={Resumen} />
           <Stack.Screen name="Seleccion" component={Tipo} />
+          <Stack.Screen name="Pendiente" component={Pendiente} />
+          <Stack.Screen name="Pago en efectivo" component={Dinero} />
         </Stack.Navigator>
       </NavigationContainer>
     );

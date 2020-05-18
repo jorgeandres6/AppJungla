@@ -109,13 +109,11 @@ function ResumenCuenta (props) {
              </Chip>
             <Button
             onPress={() => {
-                //console.log(Firebase.auth().currentUser.email);
                 addUsuarios(Firebase.auth().currentUser.email).then(dataSnapshot => {
                     let auxIds = [Object.getOwnPropertyNames(dataSnapshot.val())[0]];
                     let ids= [];
                     props.arrayIds != undefined ? ids = auxIds.concat(props.arrayIds):ids = auxIds;
-                    console.log(ids);
-                    registrarTicket(props.listaArray, ids, props.cuentasfin,TiposDePagos[formaDePago]);
+                    let NR = registrarTicket(props.listaArray, ids, props.cuentasfin,TiposDePagos[formaDePago]);
                 });
                 }}
             >

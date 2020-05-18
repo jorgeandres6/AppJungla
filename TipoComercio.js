@@ -75,6 +75,14 @@ export default class Tipo extends React.Component{
                 >
                     Clubes y bares
                 </Button>
+                <Button
+                onPress = {()=>{
+                  //this._unsubscribe();
+                  BackHandler.removeEventListener('hardwareBackPress', this.handlerBA);
+                  this.props.navigation.navigate('Pendiente')}}
+                >
+                    Cuentas pendientes
+                </Button>
                 </View>
                 
                 <Modal

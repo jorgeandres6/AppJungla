@@ -24,7 +24,7 @@ function Menu (props){
   
     return(
       <>
-        <ScrollView style={{width:"100%", flexDirection:"row", alignContent:"stretch"}}> 
+        <ScrollView> 
           {menu}
         </ScrollView>
         <View style={{flexDirection:'row', justifyContent:'space-around'}}>

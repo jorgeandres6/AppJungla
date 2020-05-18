@@ -46,11 +46,18 @@ export function registrarTicket (objeto,ids,totales,tipoPago){
 
     for (var i=0; i<ids.length; i++){
       let ts = tsAUX+(i+1)+'_'+ids.length;
+      let CU = totales[i].usuario+'_false';
+      let CC = totales[0].comercio+'_false';
       let ticket = {};
-      Object.assign(ticket,{resumen:objeto},totales[i],{a:year,m:month,d:date,hh:hours,mm:min,tipoPago:tipoPago});
+      Object.assign(ticket,{resumen:objeto},totales[i],{a:year,m:month,d:date,hh:hours,mm:min,tipoPago:tipoPago,CU:CU,CC:CC});
       //console.log(ids[i]);
       //return db.ref('/recibos/'+usuarios[i].correo+'/'+year+'/'+month+'/'+date+'/'+hours+min+sec).push(objeto);
       //db.ref('/recibos/'+ids[i]+'/'+year+'/'+month+'/'+date+'/'+ts).set(ticket);
       db.ref('/recibos/'+ts).set(ticket);
     }
+    return(tsAUX+'1_'+ids.length) 
+}
+
+export function ticketsPendientesU (usuario){
+  return db.ref('/recibos').orderByChild('CU').equalTo(usuario+'_false').once('value');
 }
