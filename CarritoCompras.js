@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
 import { ScrollView, View, Modal, Text} from 'react-native';
 import { Chip, Button, Paragraph, Card, Subheading, Title, FAB} from 'react-native-paper';
-
-const Context = React.createContext();
+import Firebase from 'firebase';
 
 function BotonFlotante (props){
   return(
@@ -20,17 +19,9 @@ function BotonFlotante (props){
 
 function Totales (props){
 
-  //console.log("Prueba");
-  //console.log(props.lista[0].comercio);
-
   const [modalVisible, setModalVisible] = useState(false);
-  //const [cuentasfin, setCuentasfin] = useState([{usuario:'Usuario',total:0},{usuario:'Usuario',total:0}]);
 
-  //cuentas.fill(0);
-
-  //let usuario = new Object();
-
-  let cuentasfin = [{usuario:'Usuario',subtotal:0,utilidad:0,total:0}];
+  let cuentasfin = [{usuario:Firebase.auth().currentUser.email,subtotal:0,utilidad:0,total:0}];
 
   const porcentajeUtilidad = 0.1;
   
@@ -125,7 +116,7 @@ function Totales (props){
         </View>
     <BotonFlotante funcion={setModalVisible} visibilidad={true} total={cuentasfin[0].total}/>
     <Button
-         onPress={() => props.navegar.navigate('Checkout',{cuenta:cuentasfin, lista:listaArray, users:props.usuarios, ids:props.ids})}
+         onPress={() => props.navegar.navigate('Checkout',{cuenta:cuentasfin, lista:listaArray, users:props.usuarios, ids:props.ids, pendiente:false})}
           icon="cash-multiple"
           mode="outlined"
           disabled= {props.disable}
@@ -150,8 +141,7 @@ function Lista (props){
     const menu = props.lista.map((item,index,array) =>
 
     <Card
-        //onPress={() => props.navegar.navigate('Producto',{nombre:item.nombre,descripcion:item.descripcion,precio:item.precio,listaArray:props.lista})}
-        key={index}
+    key={index}
        >
        <Card.Content>
         <Title style={{fontWeight:'bold'}}>{item.producto}</Title>

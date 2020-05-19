@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { View, Text, ScrollView} from 'react-native';
-import { Button, Subheading, Chip, Headline, Divider } from 'react-native-paper';
+import { Button, Subheading, Chip, Headline} from 'react-native-paper';
 import { registrarTicket, addUsuarios } from './httpService';
 import Firebase from 'firebase';
 
@@ -24,8 +24,27 @@ function ResumenCuenta (props) {
 
     const iconosEntrega = ['room-service-outline'];
 
+    const fecha = () => {
+        if (props.pendiente){
+            return (
+                <View>
+                    <Text>
+                        <Text style={{fontWeight:'bold'}}>ID Ticket:</Text> 
+                        {props.cuentasfin[0].idtemp}
+                    </Text>
+                    <Text>
+                    <Text style={{fontWeight:'bold'}}>Fecha:</Text>
+                        {props.cuentasfin[0].a}/{props.cuentasfin[0].m}/{props.cuentasfin[0].d} {props.cuentasfin[0].hh}:{props.cuentasfin[0].mm}</Text>
+                </View>
+            )
+        }else{
+            return null;
+        }
+    } 
+
     const resumen = props.cuentasfin.map((item) => 
         <View key={item.usuario}>
+            {fecha()}
           <Text>
           <Text style={{fontWeight:'bold'}}>Usuario:</Text>
           <Text>{item.usuario}</Text>
@@ -74,7 +93,6 @@ function ResumenCuenta (props) {
                     if (formaAux > TiposDePagos.length-1){
                         formaAux=0;
                     }
-                    console.log(formaAux);
                     setformaDePago(formaAux);
                 }}
                  style={{backgroundColor:colores[formaDePago],alignSelf:"center"}}
@@ -96,7 +114,6 @@ function ResumenCuenta (props) {
                     if (sitioAux > sitioEntrega.length-1){
                         sitioAux=0;
                     }
-                    console.log(sitioAux);
                     setsitioDeEntrega(sitioAux);
                
                 }
@@ -109,13 +126,23 @@ function ResumenCuenta (props) {
              </Chip>
             <Button
             onPress={() => {
-                addUsuarios(Firebase.auth().currentUser.email).then(dataSnapshot => {
-                    let auxIds = [Object.getOwnPropertyNames(dataSnapshot.val())[0]];
-                    let ids= [];
-                    props.arrayIds != undefined ? ids = auxIds.concat(props.arrayIds):ids = auxIds;
-                    let NR = registrarTicket(props.listaArray, ids, props.cuentasfin,TiposDePagos[formaDePago]);
-                });
-                }}
+
+                if(props.pendiente){
+                    console.log('Pendiente');
+                }else{
+                    let NR = '';
+                    addUsuarios(Firebase.auth().currentUser.email).then(dataSnapshot => {
+                        let auxIds = [Object.getOwnPropertyNames(dataSnapshot.val())[0]];
+                        let ids= [];
+                        props.arrayIds != undefined ? ids = auxIds.concat(props.arrayIds):ids = auxIds;
+                        NR = registrarTicket(props.listaArray, ids, props.cuentasfin,TiposDePagos[formaDePago]);
+                        if (formaDePago == 1){
+                            props.navegar.navigate('Dinero',{total:props.cuentasfin[0].total,idtemp:NR})
+                        }
+                    });
+                }   
+            }}
+            
             >
                 Proceder al pago
             </Button>
@@ -128,11 +155,6 @@ export default class Resumen extends React.Component{
 
     constructor (){
       super();
-      this.state = {contador:1,
-      posUsuarios:[],
-      suma:0,
-      listado:[]
-      };
     }
 
     render(){
@@ -141,10 +163,11 @@ export default class Resumen extends React.Component{
         const { lista } = this.props.route.params;
         const { users } = this.props.route.params;
         const { ids } = this.props.route.params;
+        const { pendiente } = this.props.route.params;
 
         return(
 
-            <ResumenCuenta cuentasfin={cuenta} listaArray={lista} usuarios={users} arrayIds={ids}/>
+            <ResumenCuenta cuentasfin={cuenta} listaArray={lista} usuarios={users} arrayIds={ids} navegar={this.props.navigation} pendiente={pendiente}/>
 
         );
     }

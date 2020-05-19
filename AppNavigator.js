@@ -36,7 +36,7 @@ function MyStack() {
           <Stack.Screen name="Checkout" component={Resumen} />
           <Stack.Screen name="Seleccion" component={Tipo} />
           <Stack.Screen name="Pendiente" component={Pendiente} />
-          <Stack.Screen name="Pago en efectivo" component={Dinero} />
+          <Stack.Screen name="Dinero" component={Dinero} />
         </Stack.Navigator>
       </NavigationContainer>
     );

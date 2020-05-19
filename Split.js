@@ -1,10 +1,10 @@
-import React, {Component,useState} from 'react';
+import React from 'react';
 import { ScrollView, View, Text } from 'react-native';
-import { TextInput, Title, Paragraph, Chip, Button} from 'react-native-paper';
+import { TextInput, Title, Chip, Button} from 'react-native-paper';
 import { addUsuarios } from './httpService';
+import Firebase from 'firebase';
 
 function Lista (props){
-  const [text, setText] = useState('');
     const menu = props.lista.map((item,index) =>
     
     <Chip 
@@ -12,7 +12,6 @@ function Lista (props){
     onPress={() => console.log('Pressed')}
     mode="outlined"
     style={{backgroundColor:props.colores[index]}}
-    //avatar={{ uri: 'https://picsum.photos/'+Math.floor(Math.random())}}
     >
       <Text style={{color:'white'}}>
         {item.correo}
@@ -34,7 +33,7 @@ export default class Split extends React.Component{
       super();
       this.state ={
         colores:['grey','orangered','darkmagenta','midnightblue','darkgreen','sienna','deeppink','lightslategrey','mediumvioletred','orange'],
-        usuarios:[{correo:'usuario', nombre:'usuario'}],
+        usuarios:[{correo:Firebase.auth().currentUser.email, nombre:'usuario'}],
         text:'',
         ids:[]
       }
@@ -74,10 +73,7 @@ export default class Split extends React.Component{
             <Button
             onPress={() => {
               addUsuarios(this.state.text).then(dataSnapshot => {
-                //console.log(Object.getOwnPropertyNames(dataSnapshot.val())[0]);
                 dataSnapshot.val() != null ? this.agregarUsuario(dataSnapshot.val()[Object.keys(dataSnapshot.val())],Object.getOwnPropertyNames(dataSnapshot.val())[0]):alert("El usuario no esta registrado");
-                //this.agregarUsuario(response.data);
-                //console.log(this.state.ids);
               });
             }}
             icon="account-plus-outline"
@@ -93,7 +89,6 @@ export default class Split extends React.Component{
               this.props.navigation.navigate('Carrito',{usuarios:users, colores:this.state.colores, ids:this.state.ids})}	
             }
               
-            //onPress={() => console.log(this.state.usuarios)}
             icon="cart-outline"
             mode="outlined"
             >
