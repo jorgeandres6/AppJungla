@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { View, Text, ScrollView} from 'react-native';
 import { Button, Subheading, Chip, Headline} from 'react-native-paper';
-import { registrarTicket, addUsuarios } from './httpService';
+import { registrarTicket, addUsuarios, actualizarMetodoDePago} from './httpService';
 import Firebase from 'firebase';
 
 function ResumenCuenta (props) {
@@ -128,7 +128,10 @@ function ResumenCuenta (props) {
             onPress={() => {
 
                 if(props.pendiente){
-                    console.log('Pendiente');
+                    actualizarMetodoDePago(props.ticketID,TiposDePagos[formaDePago]);
+                    if (formaDePago == 1){
+                        props.navegar.navigate('Dinero',{total:props.cuentasfin[0].total,idtemp:props.cuentasfin[0].idtemp})
+                    }
                 }else{
                     let NR = '';
                     addUsuarios(Firebase.auth().currentUser.email).then(dataSnapshot => {
@@ -137,7 +140,14 @@ function ResumenCuenta (props) {
                         props.arrayIds != undefined ? ids = auxIds.concat(props.arrayIds):ids = auxIds;
                         NR = registrarTicket(props.listaArray, ids, props.cuentasfin,TiposDePagos[formaDePago]);
                         if (formaDePago == 1){
-                            props.navegar.navigate('Dinero',{total:props.cuentasfin[0].total,idtemp:NR})
+                            props.navegar.reset({
+                                index:0,
+                                routes: [{
+                                  name: "Dinero",
+                                  params: {total:props.cuentasfin[0].total,idtemp:NR}
+                                }]
+                              });
+                            //props.navegar.navigate('Dinero',{total:props.cuentasfin[0].total,idtemp:NR})
                         }
                     });
                 }   
@@ -164,10 +174,11 @@ export default class Resumen extends React.Component{
         const { users } = this.props.route.params;
         const { ids } = this.props.route.params;
         const { pendiente } = this.props.route.params;
+        const { ticketID } = this.props.route.params;
 
         return(
 
-            <ResumenCuenta cuentasfin={cuenta} listaArray={lista} usuarios={users} arrayIds={ids} navegar={this.props.navigation} pendiente={pendiente}/>
+            <ResumenCuenta cuentasfin={cuenta} listaArray={lista} usuarios={users} arrayIds={ids} navegar={this.props.navigation} pendiente={pendiente} ticketID={ticketID}/>
 
         );
     }

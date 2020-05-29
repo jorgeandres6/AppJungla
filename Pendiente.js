@@ -9,8 +9,7 @@ function Tickets (props) {
           <Card
           onPress={() => {
             let array = [props.tickets[item]];
-            console.log(array);
-            props.navegar.navigate('Checkout',{cuenta:array, pendiente:true})
+            props.navegar.navigate('Checkout',{cuenta:array, pendiente:true, ticketID:item})
           }}
             //onPress={() => props.navegar.navigate('Producto',{nombre:item.nombre,descripcion:item.descripcion,precio:item.precio,listaArray:props.lista,local:props.local})}
             key={item}

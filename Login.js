@@ -1,7 +1,11 @@
 import React from 'react';
-import { View, Modal, Text, ActivityIndicator, Alert } from 'react-native';
+import { View, Modal, Text, ActivityIndicator, Alert, Vibration, Platform } from 'react-native';
 import { Button, TextInput, Subheading} from 'react-native-paper';
 import Firebase from 'firebase';
+import { Notifications } from 'expo';
+import * as Permissions from 'expo-permissions';
+import Constants from 'expo-constants';
+
 
 function avisoEmail () {
   Firebase.auth().currentUser.sendEmailVerification().then(
@@ -24,7 +28,9 @@ export default class Login extends React.Component{
       email:'',
       password:'',
       modalVisible:false,
-      activityVisible:false
+      activityVisible:false,
+      expoPushToken: '',
+      notification: {},
     }
   }
 
@@ -32,8 +38,46 @@ export default class Login extends React.Component{
     Firebase.auth().signOut().catch(
       (error) => {alert(error);}
     )
-
+    this.registerForPushNotificationsAsync();
+    this._notificationSubscription = Notifications.addListener(this._handleNotification);
   }
+
+  registerForPushNotificationsAsync = async () => {
+    if (Constants.isDevice) {
+      const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+        finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!');
+        return;
+      }
+      token = await Notifications.getExpoPushTokenAsync();
+      console.log(token);
+      this.setState({ expoPushToken: token });
+    } else {
+      alert('Must use physical device for Push Notifications');
+    }
+
+    if (Platform.OS === 'android') {
+      Notifications.createChannelAndroidAsync('Jungla', {
+        name: 'Jungla',
+        sound: true,
+        priority: 'max',
+        vibrate: [0, 250, 100, 250],
+        badge: true,
+        lockscreenVisibility: 'public' 
+      });
+    }
+  }
+
+  _handleNotification = notification => {
+    Vibration.vibrate();
+    console.log(notification);
+    this.setState({ notification: notification });
+  };
 
     render(){
         return (
@@ -79,8 +123,14 @@ export default class Login extends React.Component{
                     if (user) {
                       if (user.emailVerified){
                         this.setState({activityVisible:false});
-                        this.props.navigation.navigate('Seleccion');
+                        //this.props.navigation.navigate('Seleccion');
                         unsubscribe();
+                        this.props.navigation.reset({
+                          index:0,
+                          routes: [{
+                            name: "Seleccion"
+                          }]
+                        });
                       }else{
                         this.setState({activityVisible:false});
                         this.setState({modalVisible:true});
@@ -116,6 +166,7 @@ export default class Login extends React.Component{
               >
                   Registrarse
                 </Button>
+                <Text>Token: {this.state.expoPushToken}</Text>
             </View>
             <View style={{flex: 1,
              justifyContent: "center",

@@ -12,17 +12,31 @@ export default class Dinero extends React.Component{
       const { total } = this.props.route.params;
       const { idtemp } = this.props.route.params;
       return(
-        <View style={{alignItems:"center", justifyContent:"center"}}>
-          <Subheading>
+        <View style={{alignItems:"center", justifyContent:"center", flex:1}}>
+          <Subheading style={{fontWeight:'bold'}}>
             Tu cuenta a pagar es:
           </Subheading>
           <Text>$ {total} USD</Text>
-          <Subheading>
+          <Subheading style={{fontWeight:'bold'}}>
             Muestra el codigo en caja:
           </Subheading>
-          <Headline>
-            {idtemp}
-          </Headline>
+          <View style={{borderWidth:3, alignSelf:"stretch"}}> 
+            <Headline style={{fontWeight:'bold', alignSelf:"center"}}>
+              {idtemp}
+            </Headline>
+          </View>
+          <Button
+           onPress={() => {
+            this.props.navigation.reset({
+              index:0,
+              routes: [{
+                name: "Seleccion"
+              }]
+            });
+           }}
+          >
+            Regresar al Inicio
+          </Button>
         </View>
       )
     }

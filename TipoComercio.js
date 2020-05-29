@@ -17,7 +17,7 @@ export default class Tipo extends React.Component{
       };
     }
 
-    componentDidMount(){
+    /*componentDidMount(){
         this.props.navigation.setOptions({
             headerLeft: () => (
                 <Button onPress={() => {Firebase.auth().signOut().then(
@@ -34,14 +34,13 @@ export default class Tipo extends React.Component{
           });
           //BackHandler.addEventListener('hardwareBackPress',this.botonAtras);
           this._unsubscribe = this.props.navigation.addListener('focus',() => this.botonAtras());
-         
-    }
+    }*/
 
-    componentWillUnmount(){
+    /*componentWillUnmount(){
       //BackHandler.removeEventListener('hardwareBackPress',this.botonAtras);
       this._unsubscribe();
       BackHandler.removeEventListener('hardwareBackPress', this.handlerBA);
-    }
+    }*/
 
     botonAtras() {
       BackHandler.addEventListener('hardwareBackPress', this.handlerBA);

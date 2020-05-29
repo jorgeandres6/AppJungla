@@ -53,3 +53,7 @@ export function registrarTicket (objeto,ids,totales,tipoPago){
 export function ticketsPendientesU (usuario){
   return db.ref('/recibos').orderByChild('CU').equalTo(usuario+'_false').once('value');
 }
+
+export function actualizarMetodoDePago (usuario, tipoPago){
+  db.ref('/recibos/'+usuario+'/tipoPago').set(tipoPago);
+}
