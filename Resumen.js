@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import { View, Text, ScrollView} from 'react-native';
 import { Button, Subheading, Chip, Headline} from 'react-native-paper';
 import { registrarTicket, addUsuarios, actualizarMetodoDePago} from './httpService';
+import { nuevosRecibos } from './PushService';
 import Firebase from 'firebase';
 
 function ResumenCuenta (props) {
@@ -150,6 +151,7 @@ function ResumenCuenta (props) {
                             //props.navegar.navigate('Dinero',{total:props.cuentasfin[0].total,idtemp:NR})
                         }
                     });
+                    props.tokens ? nuevosRecibos(props.tokens):null;
                 }   
             }}
             
@@ -175,10 +177,11 @@ export default class Resumen extends React.Component{
         const { ids } = this.props.route.params;
         const { pendiente } = this.props.route.params;
         const { ticketID } = this.props.route.params;
+        const { tokens } = this.props.route.params;
 
         return(
 
-            <ResumenCuenta cuentasfin={cuenta} listaArray={lista} usuarios={users} arrayIds={ids} navegar={this.props.navigation} pendiente={pendiente} ticketID={ticketID}/>
+            <ResumenCuenta cuentasfin={cuenta} listaArray={lista} usuarios={users} arrayIds={ids} navegar={this.props.navigation} pendiente={pendiente} ticketID={ticketID} tokens={tokens}/>
 
         );
     }

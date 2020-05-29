@@ -8,20 +8,28 @@ export function getMenu (comercio){
   return db.ref('/menu/'+comercio).once('value');
 }
 
-export function registrarUsuario (correoA,nombreA,apellidoA){
+export function registrarUsuario (correoA,nombreA,apellidoA, id){
 
   let iniciales = nombreA.substr(0,1) + apellidoA.substr(0,1);
 
-  var ID = iniciales+Date.now();
+  //var ID = iniciales+Date.now();
 
-  db.ref('/ids/'+ID).set({correo:correoA});
+  db.ref('/ids/'+id).set({correo:correoA,token:''});
 
-  db.ref('/usuarios/'+ID).set({correo:correoA,nombre:nombreA,apellido:apellidoA});
+  db.ref('/usuarios/'+id).set({correo:correoA,nombre:nombreA,apellido:apellidoA});
 
 }
 
 export function addUsuarios (usuario){
   return db.ref('/ids').orderByChild('correo').equalTo(usuario).once('value');
+}
+
+export function RegistrarToken (token,usuario) {
+  db.ref('/ids/'+usuario).update({token:token});
+}
+
+export function BorrarToken (usuario) {
+  db.ref('/ids/'+usuario).update({token:''});
 }
 
 export function registrarTicket (objeto,ids,totales,tipoPago){

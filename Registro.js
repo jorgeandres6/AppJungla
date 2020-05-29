@@ -107,7 +107,8 @@ export default class Registro extends React.Component{
                       userCredentials => {
                         Firebase.auth().currentUser.sendEmailVerification().then(
                          () =>  {
-                           registrarUsuario(this.state.email,this.state.nombre,this.state.apellido);
+                           //console.log(Firebase.auth().currentUser.uid);
+                           registrarUsuario(this.state.email,this.state.nombre,this.state.apellido, Firebase.auth().currentUser.uid);
                            
                            userCredentials.user.updateProfile({
                            displayName: this.state.nombre +" "+ this.state.apellido

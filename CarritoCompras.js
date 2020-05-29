@@ -116,7 +116,7 @@ function Totales (props){
         </View>
     <BotonFlotante funcion={setModalVisible} visibilidad={true} total={cuentasfin[0].total}/>
     <Button
-         onPress={() => props.navegar.navigate('Checkout',{cuenta:cuentasfin, lista:listaArray, users:props.usuarios, ids:props.ids, pendiente:false})}
+         onPress={() => props.navegar.navigate('Checkout',{cuenta:cuentasfin, lista:listaArray, users:props.usuarios, ids:props.ids, pendiente:false, tokens:props.tokens})}
           icon="cash-multiple"
           mode="outlined"
           disabled= {props.disable}
@@ -193,7 +193,7 @@ function Lista (props){
         > 
           {menu}
         </ScrollView>
-        <Totales lista={props.lista} usuarios={props.arrayUsuarios} ids={props.arrayIds} arrayUsers={users} navegar={props.navegar}/>
+        <Totales lista={props.lista} usuarios={props.arrayUsuarios} ids={props.arrayIds} arrayUsers={users} navegar={props.navegar} tokens={props.tokens}/>
         <View>
           <Button
             onPress={() => props.navegar.navigate('Split')}
@@ -226,6 +226,7 @@ export default class Carrito extends React.Component{
         const { usuarios } = this.props.route.params;
         const { colores } = this.props.route.params;
         const { ids } = this.props.route.params;
+        const { tokens } = this.props.route.params;
         let deshabilitar = true;
         
         
@@ -233,7 +234,7 @@ export default class Carrito extends React.Component{
         (listaArray==undefined || listaArray.length<1) ? deshabilitar = true : deshabilitar = false;
             
               return (
-                <Lista lista={listaArray} navegar={this.props.navigation} disable={deshabilitar} arrayUsuarios={usuarios} arrayColores={colores} arrayIds={ids}/>
+                <Lista lista={listaArray} navegar={this.props.navigation} disable={deshabilitar} arrayUsuarios={usuarios} arrayColores={colores} arrayIds={ids} tokens={tokens}/>
               );
       }
 }

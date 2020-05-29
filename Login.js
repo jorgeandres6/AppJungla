@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Modal, Text, ActivityIndicator, Alert, Vibration, Platform } from 'react-native';
+import { View, Modal, Text, ActivityIndicator, Alert, Platform } from 'react-native';
 import { Button, TextInput, Subheading} from 'react-native-paper';
 import Firebase from 'firebase';
 import { Notifications } from 'expo';
+import {_handleNotification, sendPushNotification} from './PushService';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
-
+import {RegistrarToken} from './httpService';
 
 function avisoEmail () {
   Firebase.auth().currentUser.sendEmailVerification().then(
@@ -39,10 +40,10 @@ export default class Login extends React.Component{
       (error) => {alert(error);}
     )
     this.registerForPushNotificationsAsync();
-    this._notificationSubscription = Notifications.addListener(this._handleNotification);
+    this._notificationSubscription = Notifications.addListener(_handleNotification);
   }
 
-  registerForPushNotificationsAsync = async () => {
+  registerForPushNotificationsAsync = async() => {
     if (Constants.isDevice) {
       const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
       let finalStatus = existingStatus;
@@ -55,15 +56,14 @@ export default class Login extends React.Component{
         return;
       }
       token = await Notifications.getExpoPushTokenAsync();
-      console.log(token);
       this.setState({ expoPushToken: token });
     } else {
       alert('Must use physical device for Push Notifications');
     }
 
     if (Platform.OS === 'android') {
-      Notifications.createChannelAndroidAsync('Jungla', {
-        name: 'Jungla',
+      Notifications.createChannelAndroidAsync('NuevoRecibo', {
+        name: 'NuevoRecibo',
         sound: true,
         priority: 'max',
         vibrate: [0, 250, 100, 250],
@@ -72,12 +72,6 @@ export default class Login extends React.Component{
       });
     }
   }
-
-  _handleNotification = notification => {
-    Vibration.vibrate();
-    console.log(notification);
-    this.setState({ notification: notification });
-  };
 
     render(){
         return (
@@ -125,6 +119,9 @@ export default class Login extends React.Component{
                         this.setState({activityVisible:false});
                         //this.props.navigation.navigate('Seleccion');
                         unsubscribe();
+                        console.log(this.state.email);
+                        console.log(this.state.expoPushToken);
+                        RegistrarToken (this.state.expoPushToken,Firebase.auth().currentUser.uid);
                         this.props.navigation.reset({
                           index:0,
                           routes: [{
@@ -167,11 +164,25 @@ export default class Login extends React.Component{
                   Registrarse
                 </Button>
                 <Text>Token: {this.state.expoPushToken}</Text>
+                
+                <Button
+                mode="text"
+                color="red"
+                onPress={() => {
+                  sendPushNotification('ExponentPushToken[mwC45YIFdXsFd1V1OJjlF4]')}}
+                 >
+                  1
+                </Button>
+                <Button
+                mode="text"
+                color="red"
+                onPress={() => {
+                  sendPushNotification('ExponentPushToken[Uzt0dGN1B_TRGD5GUivj3g]')}}
+                 >
+                  2
+                </Button>
             </View>
-            <View style={{flex: 1,
-             justifyContent: "center",
-            alignItems: "center",
-            marginTop: 22}}> 
+
             <Modal
               animationType="slide"
               transparent={true}
@@ -218,7 +229,7 @@ export default class Login extends React.Component{
                 </View>
               </View>
             </Modal>
-          </View>
+
           </>
           );
     }

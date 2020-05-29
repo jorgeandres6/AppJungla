@@ -35,7 +35,8 @@ export default class Split extends React.Component{
         colores:['grey','orangered','darkmagenta','midnightblue','darkgreen','sienna','deeppink','lightslategrey','mediumvioletred','orange'],
         usuarios:[{correo:Firebase.auth().currentUser.email, nombre:'usuario'}],
         text:'',
-        ids:[]
+        ids:[],
+        tokens:[]
       }
     }
 
@@ -48,6 +49,11 @@ export default class Split extends React.Component{
       this.setState({ids:arrayIds});
       this.setState({text:''});
       alert('Usuario '+item.correo+' agregado correctamente')
+      if (item.token != ''){
+        let arraytokens = this.state.tokens;
+        arraytokens.push(item.token);
+        this.setState({tokens:arraytokens})
+      }
     }
 
     render(){
@@ -73,6 +79,7 @@ export default class Split extends React.Component{
             <Button
             onPress={() => {
               addUsuarios(this.state.text).then(dataSnapshot => {
+                console.log(dataSnapshot.val())
                 dataSnapshot.val() != null ? this.agregarUsuario(dataSnapshot.val()[Object.keys(dataSnapshot.val())],Object.getOwnPropertyNames(dataSnapshot.val())[0]):alert("El usuario no esta registrado");
               });
             }}
@@ -86,7 +93,7 @@ export default class Split extends React.Component{
 
               let users = this.state.usuarios.slice();
               users.push({correo:'dividido', nombre:'dividido'});
-              this.props.navigation.navigate('Carrito',{usuarios:users, colores:this.state.colores, ids:this.state.ids})}	
+              this.props.navigation.navigate('Carrito',{usuarios:users, colores:this.state.colores, ids:this.state.ids, tokens:this.state.tokens})}	
             }
               
             icon="cart-outline"

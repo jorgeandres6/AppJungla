@@ -4,6 +4,7 @@ import { View, BackHandler, Text, Modal, Alert } from 'react-native';
 import { Button} from 'react-native-paper';
 import { getProductos } from './httpService';
 import Firebase from 'firebase';
+import {BorrarToken} from './httpService';
 
 export default class Tipo extends React.Component{
 
@@ -52,6 +53,22 @@ export default class Tipo extends React.Component{
       return true;
     }
 
+    logout = () => {
+      BorrarToken(Firebase.auth().currentUser.uid);
+      Firebase.auth().signOut().then(
+        () => {
+          this.props.navigation.reset({
+            index:0,
+            routes: [{
+              name: "Login"
+            }]
+          });
+        }
+      ).catch(
+        (error) => {alert(error)}
+      )
+    }
+
     render(){
         return(
           <>
@@ -81,6 +98,15 @@ export default class Tipo extends React.Component{
                   this.props.navigation.navigate('Pendiente')}}
                 >
                     Cuentas pendientes
+                </Button>
+                <Button
+                onPress = {()=>{
+                  //this._unsubscribe();
+                  BackHandler.removeEventListener('hardwareBackPress', this.handlerBA);
+                  this.logout();
+                  }}
+                >
+                    Logout
                 </Button>
                 </View>
                 
