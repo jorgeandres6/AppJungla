@@ -13,6 +13,7 @@ import Resumen from './Resumen';
 import Tipo from './TipoComercio';
 import Dinero from './Dinero';
 import Pendiente from './Pendiente';
+import Logo from './LogoInicio';
 
 const Stack = createStackNavigator();
 
@@ -37,6 +38,7 @@ function MyStack() {
           <Stack.Screen name="Seleccion" component={Tipo} />
           <Stack.Screen name="Pendiente" component={Pendiente} />
           <Stack.Screen name="Dinero" component={Dinero} />
+          <Stack.Screen name="Logo" component={Logo} />
         </Stack.Navigator>
       </NavigationContainer>
     );

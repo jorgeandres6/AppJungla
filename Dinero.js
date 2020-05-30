@@ -1,6 +1,7 @@
 import React from 'react';
-import { ScrollView, View, ActivityIndicator, Text } from 'react-native';
-import { Card, Title, Paragraph, Chip, Button, Subheading, Headline} from 'react-native-paper';
+import { View, Text } from 'react-native';
+import { Button, Subheading, Headline} from 'react-native-paper';
+import QRCode from 'react-native-qrcode-svg';
 
 export default class Dinero extends React.Component{
 
@@ -8,14 +9,23 @@ export default class Dinero extends React.Component{
       super();
     }
 
+    componentDidMount(){
+      
+    }
+
     render(){
       const { total } = this.props.route.params;
       const { idtemp } = this.props.route.params;
+      
       return(
         <View style={{alignItems:"center", justifyContent:"center", flex:1}}>
           <Subheading style={{fontWeight:'bold'}}>
             Tu cuenta a pagar es:
           </Subheading>
+          <QRCode
+            value={idtemp}
+            size={300}
+          />
           <Text>$ {total} USD</Text>
           <Subheading style={{fontWeight:'bold'}}>
             Muestra el codigo en caja:
