@@ -10,7 +10,7 @@ function Locales (props){
   
     <Card
     onPress={() => {
-      props.navegar.navigate('Carta',{comercio:local.nombre})
+      props.navegar.navigate('Carta',{comercio:local.nombre, tipo:local.tipo})
       //console.log(ImagenCover('W','discosybares','Disco1.jpg'))
     }}
     key={local.nombre}

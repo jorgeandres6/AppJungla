@@ -8,7 +8,7 @@ function Menu (props){
 
     const menu = props.menu.map((item,i) =>
       <Card
-        onPress={() => props.navegar.navigate('Producto',{nombre:item.nombre,descripcion:item.descripcion,precio:item.precio,listaArray:props.lista,local:props.local})}
+        onPress={() => props.navegar.navigate('Producto',{nombre:item.nombre,descripcion:item.descripcion,precio:item.precio,listaArray:props.lista,local:props.local,tipo:item.tipo, cover:item.cover})}
         //onPress={() => this.setState({productos2:this.state.productos[0].nombre})}
         //style={{backgroundColor:'red'}}
         key={item.nombre}
@@ -33,7 +33,7 @@ function Menu (props){
         </ScrollView>
         <View style={{flexDirection:'row', justifyContent:'space-around'}}>
         <Button
-        onPress={() => props.navegar.navigate('Carrito',{listaArray:props.lista})}
+        onPress={() => props.navegar.navigate('Carrito',{listaArray:props.lista, tipo:props.tipo, comercio:props.comercio})}
         icon="cart-outline"
         mode="contained"
         disabled= {props.disable}
@@ -68,9 +68,10 @@ export default class Carta extends React.Component{
     }
 
     imagenes = (locales,comercio) =>{
+      const { tipo } = this.props.route.params;
       var urlsAux = new Array(locales.length);
       locales.forEach((element,i) => {
-        storage.ref().child('comercios/discosybares/'+comercio+'/'+element.cover).getDownloadURL().then((url) => {
+        storage.ref().child('comercios/'+tipo+'/'+comercio+'/'+element.cover).getDownloadURL().then((url) => {
           urlsAux[i]=url;
           this.setState({urls:urlsAux})
           console.log(this.state.urls)
@@ -88,6 +89,7 @@ export default class Carta extends React.Component{
 
         const { listaArray } = this.props.route.params;
         const { comercio } = this.props.route.params;
+        const { tipo } = this.props.route.params;
         let deshabilitar = true;
         (listaArray==undefined || listaArray.length<1) ? deshabilitar = true : deshabilitar = false;
             if (this.state.productos.length < 1){
@@ -100,7 +102,7 @@ export default class Carta extends React.Component{
             else
             {
               return (
-                  <Menu menu={this.state.productos} navegar={this.props.navigation} lista={listaArray} local={comercio} disable={deshabilitar} urls={this.state.urls}/>
+                  <Menu menu={this.state.productos} navegar={this.props.navigation} lista={listaArray} local={comercio} disable={deshabilitar} urls={this.state.urls} tipo={tipo} comercio={comercio}/>
               );
             }
       }

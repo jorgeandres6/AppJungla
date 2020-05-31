@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import { ScrollView, View, Modal, Text} from 'react-native';
 import { Chip, Button, Paragraph, Card, Subheading, Title, FAB} from 'react-native-paper';
 import Firebase from 'firebase';
+import {storage} from './config';
 
 function BotonFlotante (props){
   return(
@@ -148,29 +149,29 @@ function Lista (props){
         <Paragraph><Text style={{fontWeight:'bold'}}>Cantidad:</Text> {item.cantidad}</Paragraph>
         <Paragraph><Text style={{fontWeight:'bold'}}>Precio unitario:</Text> {item.costo} USD</Paragraph>
         <Paragraph><Text style={{fontWeight:'bold'}}>Precio total:</Text> {item.total} USD</Paragraph>
-        <Chip 
-        icon="information" 
-        onPress={() => {
-          
-          if (props.arrayUsuarios != undefined && props.arrayUsuarios.length > 2){
-
-            let auxpos = users.slice(0,users.length);
-            auxpos[index]++;        
-            if(auxpos[index] > props.arrayUsuarios.length-1){
-              auxpos[index]=0; 
-            }
-            setUsers(auxpos);
-          }
-        }}
-        style={{backgroundColor:props.arrayColores != undefined?props.arrayColores[users[index]]:"grey"}}
-        >
-          <Text style={{color:'white'}}> 
-            {props.arrayUsuarios != undefined?props.arrayUsuarios[users[index]].correo:"usuario"}
-          </Text>
-        </Chip>
         </Card.Content>
 
-        <Card.Actions>
+        <Card.Actions style={{justifyContent:"space-around"}}>
+          <Chip 
+          icon="information" 
+          onPress={() => {
+            
+            if (props.arrayUsuarios != undefined && props.arrayUsuarios.length > 2){
+
+              let auxpos = users.slice(0,users.length);
+              auxpos[index]++;        
+              if(auxpos[index] > props.arrayUsuarios.length-1){
+                auxpos[index]=0; 
+              }
+              setUsers(auxpos);
+            }
+          }}
+          style={{backgroundColor:props.arrayColores != undefined?props.arrayColores[users[index]]:"grey" }}
+          >
+            <Text style={{color:'white'}}> 
+              {props.arrayUsuarios != undefined?props.arrayUsuarios[users[index]].correo:"usuario"}
+            </Text>
+          </Chip>
           <Button
              onPress={() => props.navegar.navigate('Eliminar',{listaArray:array, indice:index})}
              icon="cart-remove"
@@ -180,7 +181,12 @@ function Lista (props){
           </Button>
         </Card.Actions>
 
-        <Card.Cover source={{ uri: 'https://picsum.photos/'+Math.floor(Math.random()) }} />
+        <Card.Cover source={{ uri: 
+          //'https://picsum.photos/'+Math.floor(Math.random()) 
+          props.urls[index]
+          }} 
+        />
+
       </Card>
 
        
@@ -216,8 +222,32 @@ export default class Carrito extends React.Component{
       this.state = {contador:1,
       posUsuarios:[],
       suma:0,
-      listado:[]
+      listado:[],
+      urls:[]
       };
+    }
+
+    componentDidMount(){
+      const { listaArray } = this.props.route.params;
+      this.imagenes(listaArray);
+    }
+
+    imagenes = (locales) =>{
+      const { tipo } = this.props.route.params;
+      const { comercio } = this.props.route.params;
+      var urlsAux = new Array(locales.length);
+      locales.forEach((element,i) => {
+        storage.ref().child('comercios/'+tipo+'/'+comercio+'/'+element.cover).getDownloadURL().then((url) => {
+          urlsAux[i]=url;
+          this.setState({urls:urlsAux})
+          console.log(this.state.urls)
+        }).catch((e) => {
+          console.log(e);
+          //urlsAux.push('./assets/LogosDefault/Logo.jpg');
+          //this.setState({urls:urlsAux})
+          //console.log(this.state.urls)
+        }) 
+      })
     }
 
     render(){
@@ -227,6 +257,7 @@ export default class Carrito extends React.Component{
         const { colores } = this.props.route.params;
         const { ids } = this.props.route.params;
         const { tokens } = this.props.route.params;
+        const { tipo } = this.props.route.params;
         let deshabilitar = true;
         
         
@@ -234,7 +265,7 @@ export default class Carrito extends React.Component{
         (listaArray==undefined || listaArray.length<1) ? deshabilitar = true : deshabilitar = false;
             
               return (
-                <Lista lista={listaArray} navegar={this.props.navigation} disable={deshabilitar} arrayUsuarios={usuarios} arrayColores={colores} arrayIds={ids} tokens={tokens}/>
+                <Lista lista={listaArray} navegar={this.props.navigation} disable={deshabilitar} arrayUsuarios={usuarios} arrayColores={colores} arrayIds={ids} tokens={tokens} urls={this.state.urls}/>
               );
       }
 }

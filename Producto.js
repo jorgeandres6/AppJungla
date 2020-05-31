@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Image } from 'react-native';
 import { IconButton, Paragraph, Text, Colors, Button} from 'react-native-paper';
+import Firebase from 'firebase';
 
 export default class Producto extends React.Component{
 
@@ -23,13 +24,14 @@ export default class Producto extends React.Component{
       const { nombre } = this.props.route.params;
       const { precio } = this.props.route.params;
       const { local } = this.props.route.params;
+      const { cover } = this.props.route.params;
       let carrito = [];
       let ptotal = this.state.contador * precio;
       const { listaArray } = this.props.route.params;
       if (listaArray!=undefined){
         carrito=listaArray.slice();
       }
-      let articulo = {producto:nombre,cantidad:this.state.contador,costo:precio,comercio:local,total:ptotal,usuario:0,nombreUsuario:"usuario"};
+      let articulo = {producto:nombre,cantidad:this.state.contador,costo:precio,comercio:local,total:ptotal,usuario:0,nombreUsuario:Firebase.auth().currentUser.email, cover:cover};
       carrito.push(articulo);
       console.log(carrito);
       this.props.navigation.navigate('Carta',{listaArray:carrito});
