@@ -163,24 +163,6 @@ export default class Login extends React.Component{
               >
                   Registrarse
                 </Button>
-                <Text>Token: {this.state.expoPushToken}</Text>
-                
-                <Button
-                mode="text"
-                color="red"
-                onPress={() => {
-                  sendPushNotification('ExponentPushToken[mwC45YIFdXsFd1V1OJjlF4]')}}
-                 >
-                  1
-                </Button>
-                <Button
-                mode="text"
-                color="red"
-                onPress={() => {
-                  sendPushNotification('ExponentPushToken[Uzt0dGN1B_TRGD5GUivj3g]')}}
-                 >
-                  2
-                </Button>
             </View>
 
             <Modal

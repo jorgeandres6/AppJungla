@@ -1,24 +1,32 @@
-import React from 'react';
+import React , {useState} from 'react';
 import { ScrollView, View, Text, ActivityIndicator, BackHandler } from 'react-native';
 import { Card, Title, Paragraph} from 'react-native-paper';
 import Firebase from 'firebase';
+import {storage} from './config';
 
 function Locales (props){
 
-  const comercios = props.locales.map((local) =>
+  const comercios = props.locales.map((local,i) =>
+  
     <Card
-      onPress={() => {
-        props.navegar.navigate('Carta',{comercio:local.nombre})}}
-      //onPress={() => this.setState({productos2:this.state.productos[0].nombre})}
-      key={local.nombre}
-     >
-     <Card.Content>
-      <Title style={{fontWeight:'bold'}}>{local.nombre}</Title>
-      <Paragraph>{local.direccion}</Paragraph>
-      <Paragraph><Text style={{fontWeight:'bold'}}>Apertura:</Text> {local.apertura} - <Text style={{fontWeight:'bold'}}>Cierre:</Text>{local.cierre}</Paragraph>
-      </Card.Content>
-      <Card.Cover source={{ uri: 'https://picsum.photos/'+Math.floor(Math.random()) }} />
-    </Card>
+    onPress={() => {
+      props.navegar.navigate('Carta',{comercio:local.nombre})
+      //console.log(ImagenCover('W','discosybares','Disco1.jpg'))
+    }}
+    key={local.nombre}
+   >
+   <Card.Content>
+    <Title style={{fontWeight:'bold'}}>{local.nombre}</Title>
+    <Paragraph>{local.direccion}</Paragraph>
+    <Paragraph><Text style={{fontWeight:'bold'}}>Apertura:</Text> {local.apertura} - <Text style={{fontWeight:'bold'}}>Cierre:</Text>{local.cierre}</Paragraph>
+    </Card.Content>
+    <Card.Cover source={{ uri: 
+      //'https://picsum.photos/'+Math.floor(Math.random()) 
+      //ImagenCover('W','discosybares','Disco1.jpg')
+      props.urls[i]
+      }} 
+    />
+  </Card>
   );
 
   return(
@@ -32,7 +40,10 @@ export default class Seleccion extends React.Component{
 
   constructor (){
     super();
-    this.state = {productos:[]};
+    this.state = {
+      productos:[],
+      urls:[]
+    };
   }
 
   componentDidMount (){
@@ -41,10 +52,26 @@ export default class Seleccion extends React.Component{
       funcionMuestra.then((dataSnapshot) => {
       //console.log(dataSnapshot.val());
       this.setState({productos:dataSnapshot.val()});
+      this.imagenes(dataSnapshot.val())
       //console.log(this.state.productos);
       //this.setState({productos2:'response.data'});
     });
     const {email,displayName} = Firebase.auth().currentUser;
+  }
+
+  imagenes = (locales) =>{
+    var urlsAux = new Array(locales.length);
+    locales.forEach((element,i) => {
+      storage.ref().child('comercios/'+element.tipo+'/'+element.nombre+'/'+element.cover).getDownloadURL().then((url) => {
+        urlsAux[i]=url;
+        this.setState({urls:urlsAux})
+      }).catch((e) => {
+        //console.log(e);
+        //urlsAux.push('./assets/LogosDefault/Logo.jpg');
+        //this.setState({urls:urlsAux})
+        //console.log(this.state.urls)
+      }) 
+    })
   }
 
     render(){
@@ -59,7 +86,7 @@ export default class Seleccion extends React.Component{
           else
           {
             return (
-              <Locales locales={this.state.productos} navegar={this.props.navigation}/>
+              <Locales locales={this.state.productos} navegar={this.props.navigation} urls={this.state.urls}/>
             );
           }
     }
