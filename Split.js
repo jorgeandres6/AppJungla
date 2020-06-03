@@ -62,19 +62,19 @@ export default class Split extends React.Component{
           <Title>
             Agregar compañeros al equipo
           </Title>
-          <Lista lista={this.state.usuarios} colores={this.state.colores} navegar={this.props.navigation}/>
-          <View>
+          <View style={{flexDirection:'row', alignItems:"center", flexWrap:"wrap"}}>
             <TextInput
-              label="Ingrese el correo de su compañero"
-              onChangeText={text => this.setState({text})}
-              value={this.state.text}
-              mode="outlined"
-              autoCapitalize="none"
-              autoCompleteType="email"
-              autoFocus={true}
-              clearButtonMode="always"
-              keyboardType="email-address"
-              textContentType="emailAddress"
+                label="Ingrese el correo de su compañero"
+                onChangeText={text => this.setState({text})}
+                value={this.state.text}
+                mode="outlined"
+                autoCapitalize="none"
+                autoCompleteType="email"
+                autoFocus={true}
+                clearButtonMode="always"
+                keyboardType="email-address"
+                textContentType="emailAddress"
+                style={{flex:5}}
             />
             <Button
             onPress={() => {
@@ -84,10 +84,14 @@ export default class Split extends React.Component{
               });
             }}
             icon="account-plus-outline"
-            mode="outlined"
+            mode="text"
+            style={{flex:1}}
             >
-              Agregar compañero
+              Agregar
             </Button>
+          </View>
+          <Lista lista={this.state.usuarios} colores={this.state.colores} navegar={this.props.navigation}/>
+          <View>
             <Button
             onPress={() => {
 

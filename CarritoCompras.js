@@ -1,26 +1,15 @@
 import React, {useState} from 'react';
-import { ScrollView, View, Modal, Text} from 'react-native';
-import { Chip, Button, Paragraph, Card, Subheading, Title, FAB} from 'react-native-paper';
+import { ScrollView, View, Modal, Text, Alert} from 'react-native';
+import { Chip, Button, Paragraph, Card, Subheading, Title, FAB, TextInput} from 'react-native-paper';
 import Firebase from 'firebase';
 import {storage} from './config';
 
-function BotonFlotante (props){
-  return(
-    <FAB
-    style = {{position: 'absolute', 
-    margin: 16,
-    alignSelf:'center',
-    bottom: 100}}
-    icon="cash-usd"
-    label={"Total: $"+props.total+" USD"}
-    onPress = {() => {props.funcion(props.visibilidad)}}
-  />
-  )
-}
 
 function Totales (props){
 
   const [modalVisible, setModalVisible] = useState(false);
+
+  const [text,setText] = useState('');
 
   let cuentasfin = [{usuario:Firebase.auth().currentUser.email,subtotal:0,utilidad:0,total:0}];
 
@@ -74,57 +63,17 @@ function Totales (props){
   );
   
   return (
-    <>
-       <View style={{flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        marginTop: 22}}> 
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-          }}
-        >
-          <View style={{flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: 22}}>
-            <View style={{
-             margin: 20,
-             backgroundColor: "white",
-             borderRadius: 20,
-             padding: 35,
-             alignItems: "center",
-             shadowColor: "#000",
-             shadowOffset: {width: 0,height: 2},
-
-             }}>
-              <Subheading>
-                Cuenta final:
-              </Subheading>
-              {resumen}
-              <Button onPress={() => {
-              setModalVisible(false);
-              }}
-              icon="arrow-left-bold-outline">
-                Cerrar
-              </Button>
-            </View>
-          </View>
-        </Modal>
-        </View>
-    <BotonFlotante funcion={setModalVisible} visibilidad={true} total={cuentasfin[0].total}/>
-    <Button
-         onPress={() => props.navegar.navigate('Checkout',{cuenta:cuentasfin, lista:listaArray, users:props.usuarios, ids:props.ids, pendiente:false, tokens:props.tokens})}
-          icon="cash-multiple"
-          mode="outlined"
-          disabled= {props.disable}
-          >
-            Proceder al checkout
-          </Button>
-    </>
+     <FAB
+    style = {{position: 'absolute', 
+    margin: 16,
+    alignSelf:'center',
+    bottom: 100}}
+    icon="cash-usd"
+    label={"Pagar Total: $"+cuentasfin[0].total+" USD"}
+    onPress = {() => {
+      props.navegar.navigate('Checkout',{cuenta:cuentasfin, lista:listaArray, users:props.usuarios, ids:props.ids, pendiente:false, tokens:props.tokens})
+    }}
+  />
   );
 }
 
@@ -137,8 +86,6 @@ function Lista (props){
 
     const [users,setUsers] = useState(arrayPos);
 
-
-  
     const menu = props.lista.map((item,index,array) =>
 
     <Card
@@ -151,7 +98,7 @@ function Lista (props){
         <Paragraph><Text style={{fontWeight:'bold'}}>Precio total:</Text> {item.total} USD</Paragraph>
         </Card.Content>
 
-        <Card.Actions style={{justifyContent:"space-around"}}>
+        <Card.Actions style={{justifyContent:"space-around", flexWrap:"wrap"}}>
           <Chip 
           icon="information" 
           onPress={() => {
@@ -169,7 +116,7 @@ function Lista (props){
           style={{backgroundColor:props.arrayColores != undefined?props.arrayColores[users[index]]:"grey" }}
           >
             <Text style={{color:'white'}}> 
-              {props.arrayUsuarios != undefined?props.arrayUsuarios[users[index]].correo:"usuario"}
+              {props.arrayUsuarios != undefined?props.arrayUsuarios[users[index]].correo:Firebase.auth().currentUser.email}
             </Text>
           </Chip>
           <Button

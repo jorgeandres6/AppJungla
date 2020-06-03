@@ -36,9 +36,9 @@ export default class Login extends React.Component{
   }
 
   componentDidMount(){
-    Firebase.auth().signOut().catch(
+    /*Firebase.auth().signOut().catch(
       (error) => {alert(error);}
-    )
+    )*/
     this.registerForPushNotificationsAsync();
     this._notificationSubscription = Notifications.addListener(_handleNotification);
   }
@@ -162,6 +162,15 @@ export default class Login extends React.Component{
                   this.props.navigation.navigate('Registro')}}
               >
                   Registrarse
+                </Button>
+
+                <Button
+                mode="text"
+                color="red"
+                onPress={() => {
+                  this.props.navigation.navigate('Reset')}}
+              >
+                  Nueva contraseña
                 </Button>
             </View>
 

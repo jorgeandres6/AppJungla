@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import { View, Text, ScrollView} from 'react-native';
-import { Button, Subheading, Chip, Headline} from 'react-native-paper';
+import { View, Text, ScrollView, Modal} from 'react-native';
+import { Button, Subheading, Chip, Headline, TextInput} from 'react-native-paper';
 import { registrarTicket, addUsuarios, actualizarMetodoDePago} from './httpService';
 import { nuevosRecibos } from './PushService';
 import Firebase from 'firebase';
@@ -8,6 +8,10 @@ import Firebase from 'firebase';
 function ResumenCuenta (props) {
     
     //console.log(props.cuentasfin);
+
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const [text,setText] = useState('');
 
     const [formaDePago,setformaDePago] = useState(0);
 
@@ -127,38 +131,91 @@ function ResumenCuenta (props) {
              </Chip>
             <Button
             onPress={() => {
-
-                if(props.pendiente){
-                    actualizarMetodoDePago(props.ticketID,TiposDePagos[formaDePago]);
-                    if (formaDePago == 1){
-                        props.navegar.navigate('Dinero',{total:props.cuentasfin[0].total,idtemp:props.cuentasfin[0].idtemp})
-                    }
-                }else{
-                    let NR = '';
-                    addUsuarios(Firebase.auth().currentUser.email).then(dataSnapshot => {
-                        let auxIds = [Object.getOwnPropertyNames(dataSnapshot.val())[0]];
-                        let ids= [];
-                        props.arrayIds != undefined ? ids = auxIds.concat(props.arrayIds):ids = auxIds;
-                        NR = registrarTicket(props.listaArray, ids, props.cuentasfin,TiposDePagos[formaDePago]);
-                        if (formaDePago == 1){
-                            props.navegar.reset({
-                                index:0,
-                                routes: [{
-                                  name: "Dinero",
-                                  params: {total:props.cuentasfin[0].total,idtemp:NR}
-                                }]
-                              });
-                            //props.navegar.navigate('Dinero',{total:props.cuentasfin[0].total,idtemp:NR})
-                        }
-                    });
-                    props.tokens ? nuevosRecibos(props.tokens):null;
-                }   
+                setModalVisible(true);
             }}
             
             >
                 Proceder al pago
             </Button>
             </View>
+            <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            >
+                <View style={{flex: 1,
+                justifyContent: "center",
+                marginTop: 22}}>
+                    <View style={{
+                    margin: 20,
+                    backgroundColor: "white",
+                    borderRadius: 20,
+                    padding: 35,
+                    shadowColor: "#000",
+                    shadowOffset: {width: 0,height: 2},
+                    alignItems: "center"
+                    }}>
+                <Subheading>
+                    Ingrese su codigo de seguridad
+                </Subheading>
+                <Button onPress={() => {
+                setModalVisible(false);
+                }}
+                icon="arrow-left-bold-outline">
+                    Cerrar
+                </Button>
+                <TextInput
+                    label="Contaseña"
+                    onChangeText={text => setText(text)}
+                    secureTextEntry = {true}
+                    value={text}
+                    mode="outlined"
+                    autoCapitalize="none"
+                    autoCompleteType="off"
+                    autoFocus={true}
+                    clearButtonMode="always"
+                    clearTextOnFocus={true}
+                    keyboardType="numeric"
+                    style={{alignSelf:"stretch"}}
+                />
+                <Button
+                onPress={() => {
+                    setModalVisible(false);
+                    if(props.pendiente){
+                        actualizarMetodoDePago(props.ticketID,TiposDePagos[formaDePago]);
+                        if (formaDePago == 1){
+                            props.navegar.navigate('Dinero',{total:props.cuentasfin[0].total,idtemp:props.cuentasfin[0].idtemp})
+                        }
+                    }else{
+                        let NR = '';
+                        addUsuarios(Firebase.auth().currentUser.email).then(dataSnapshot => {
+                            let auxIds = [Object.getOwnPropertyNames(dataSnapshot.val())[0]];
+                            let ids= [];
+                            props.arrayIds != undefined ? ids = auxIds.concat(props.arrayIds):ids = auxIds;
+                            NR = registrarTicket(props.listaArray, ids, props.cuentasfin,TiposDePagos[formaDePago]);
+                            if (formaDePago == 1){
+                                props.navegar.reset({
+                                    index:0,
+                                    routes: [{
+                                    name: "Dinero",
+                                    params: {total:props.cuentasfin[0].total,idtemp:NR}
+                                    }]
+                                });
+                                //props.navegar.navigate('Dinero',{total:props.cuentasfin[0].total,idtemp:NR})
+                            }
+                        });
+                        props.tokens ? nuevosRecibos(props.tokens):null;
+                    } 
+                }}
+                    icon="cash-multiple"
+                    mode="outlined"
+                    disabled= {props.disable}
+                    >
+                    Pagar
+                </Button>
+            </View>
+          </View>
+        </Modal>
         </>
     );
 }

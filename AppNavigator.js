@@ -14,6 +14,8 @@ import Tipo from './TipoComercio';
 import Dinero from './Dinero';
 import Pendiente from './Pendiente';
 import Logo from './LogoInicio';
+import ResetPassword from './ResetPassword';
+
 
 const Stack = createStackNavigator();
 
@@ -21,7 +23,7 @@ function MyStack() {
     return (
       <NavigationContainer>
         <Stack.Navigator 
-        initialRouteName="Login"
+        initialRouteName="Logo"
         screenOptions={{
             headerTitleAlign:'center'
         }}
@@ -39,6 +41,7 @@ function MyStack() {
           <Stack.Screen name="Pendiente" component={Pendiente} />
           <Stack.Screen name="Dinero" component={Dinero} />
           <Stack.Screen name="Logo" component={Logo} />
+          <Stack.Screen name="Reset" component={ResetPassword} />
         </Stack.Navigator>
       </NavigationContainer>
     );

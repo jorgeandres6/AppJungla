@@ -37,6 +37,10 @@ export default class Tipo extends React.Component{
           this._unsubscribe = this.props.navigation.addListener('focus',() => this.botonAtras());
     }*/
 
+    componentDidMount(){
+      console.log(Firebase.auth().currentUser);
+    }
+
     /*componentWillUnmount(){
       //BackHandler.removeEventListener('hardwareBackPress',this.botonAtras);
       this._unsubscribe();
