@@ -40,7 +40,7 @@ function MyStack() {
           <Stack.Screen name="Seleccion" component={Tipo} />
           <Stack.Screen name="Pendiente" component={Pendiente} />
           <Stack.Screen name="Dinero" component={Dinero} />
-          <Stack.Screen name="Logo" component={Logo} />
+          <Stack.Screen name="Logo" component={Logo} options={{headerShown: false}}/>
           <Stack.Screen name="Reset" component={ResetPassword} />
         </Stack.Navigator>
       </NavigationContainer>

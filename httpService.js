@@ -65,3 +65,7 @@ export function ticketsPendientesU (usuario){
 export function actualizarMetodoDePago (usuario, tipoPago){
   db.ref('/recibos/'+usuario+'/tipoPago').set(tipoPago);
 }
+
+export function ConfPin (uid,pin){
+  return db.ref('/pins/'+uid+'/'+pin).once('value')
+}

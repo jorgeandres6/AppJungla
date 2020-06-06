@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { View, Text, ScrollView, Modal} from 'react-native';
 import { Button, Subheading, Chip, Headline, TextInput} from 'react-native-paper';
-import { registrarTicket, addUsuarios, actualizarMetodoDePago} from './httpService';
+import { registrarTicket, addUsuarios, actualizarMetodoDePago, ConfPin} from './httpService';
 import { nuevosRecibos } from './PushService';
 import Firebase from 'firebase';
 
@@ -180,32 +180,38 @@ function ResumenCuenta (props) {
                 />
                 <Button
                 onPress={() => {
-                    setModalVisible(false);
-                    if(props.pendiente){
-                        actualizarMetodoDePago(props.ticketID,TiposDePagos[formaDePago]);
-                        if (formaDePago == 1){
-                            props.navegar.navigate('Dinero',{total:props.cuentasfin[0].total,idtemp:props.cuentasfin[0].idtemp})
-                        }
-                    }else{
-                        let NR = '';
-                        addUsuarios(Firebase.auth().currentUser.email).then(dataSnapshot => {
-                            let auxIds = [Object.getOwnPropertyNames(dataSnapshot.val())[0]];
-                            let ids= [];
-                            props.arrayIds != undefined ? ids = auxIds.concat(props.arrayIds):ids = auxIds;
-                            NR = registrarTicket(props.listaArray, ids, props.cuentasfin,TiposDePagos[formaDePago]);
-                            if (formaDePago == 1){
-                                props.navegar.reset({
-                                    index:0,
-                                    routes: [{
-                                    name: "Dinero",
-                                    params: {total:props.cuentasfin[0].total,idtemp:NR}
-                                    }]
+                    ConfPin(Firebase.auth().currentUser.uid,text).then((dataSnapshot)=>{
+                        if(dataSnapshot.exists()){
+                            setModalVisible(false);
+                            if(props.pendiente){
+                                actualizarMetodoDePago(props.ticketID,TiposDePagos[formaDePago]);
+                                if (formaDePago == 1){
+                                    props.navegar.navigate('Dinero',{total:props.cuentasfin[0].total,idtemp:props.cuentasfin[0].idtemp})
+                                }
+                            }else{
+                                let NR = '';
+                                addUsuarios(Firebase.auth().currentUser.email).then(dataSnapshot => {
+                                    let auxIds = [Object.getOwnPropertyNames(dataSnapshot.val())[0]];
+                                    let ids= [];
+                                    props.arrayIds != undefined ? ids = auxIds.concat(props.arrayIds):ids = auxIds;
+                                    NR = registrarTicket(props.listaArray, ids, props.cuentasfin,TiposDePagos[formaDePago]);
+                                    if (formaDePago == 1){
+                                        props.navegar.reset({
+                                            index:0,
+                                            routes: [{
+                                            name: "Dinero",
+                                            params: {total:props.cuentasfin[0].total,idtemp:NR}
+                                            }]
+                                        });
+                                        //props.navegar.navigate('Dinero',{total:props.cuentasfin[0].total,idtemp:NR})
+                                    }
                                 });
-                                //props.navegar.navigate('Dinero',{total:props.cuentasfin[0].total,idtemp:NR})
-                            }
-                        });
-                        props.tokens ? nuevosRecibos(props.tokens):null;
-                    } 
+                                props.tokens ? nuevosRecibos(props.tokens):null;
+                            }  
+                        }else{
+                            alert('Pin incorrecto')
+                        }
+                    })
                 }}
                     icon="cash-multiple"
                     mode="outlined"

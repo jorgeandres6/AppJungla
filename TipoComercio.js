@@ -83,7 +83,8 @@ export default class Tipo extends React.Component{
                 onPress = {()=>{
                   //this._unsubscribe();
                   BackHandler.removeEventListener('hardwareBackPress', this.handlerBA);
-                  this.props.navigation.navigate('Bares y Discos',{funcionMuestra:getProductos()})}}
+                  //this.props.navigation.navigate('Bares y Discos',{funcionMuestra:getProductos()})}}
+                  this.props.navigation.navigate('CarritoTab')}}
                 >
                     Restaurantes
                 </Button>
