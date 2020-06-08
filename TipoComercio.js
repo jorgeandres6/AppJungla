@@ -1,6 +1,6 @@
 //import * as React from 'react';
 import React from 'react';
-import { View, BackHandler, Text, Modal, Alert } from 'react-native';
+import { View, BackHandler, Text, Modal } from 'react-native';
 import { Button} from 'react-native-paper';
 import { getProductos } from './httpService';
 import Firebase from 'firebase';
@@ -84,7 +84,7 @@ export default class Tipo extends React.Component{
                   //this._unsubscribe();
                   BackHandler.removeEventListener('hardwareBackPress', this.handlerBA);
                   //this.props.navigation.navigate('Bares y Discos',{funcionMuestra:getProductos()})}}
-                  this.props.navigation.navigate('CarritoTab')}}
+                  this.props.navigation.navigate('SeleccionL',{tipo:"restaurantes"})}}
                 >
                     Restaurantes
                 </Button>
@@ -92,7 +92,7 @@ export default class Tipo extends React.Component{
                 onPress = {()=>{
                   //this._unsubscribe();
                   BackHandler.removeEventListener('hardwareBackPress', this.handlerBA);
-                  this.props.navigation.navigate('Bares y Discos',{funcionMuestra:getProductos()})}}
+                  this.props.navigation.navigate('SeleccionL',{tipo:"discosybares"})}}
                 >
                     Clubes y bares
                 </Button>

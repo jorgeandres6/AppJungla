@@ -1,7 +1,11 @@
 import {db} from './config';
 
-export function getProductos (){
+/*export function getProductos (){
     return db.ref('/comercios').once('value');
+  }*/
+
+  export function getProductos (tipo){
+    return db.ref('/comercios/'+tipo).once('value');
   }
 
 export function getMenu (comercio){
