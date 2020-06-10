@@ -30,7 +30,7 @@ export default class Logo extends React.Component{
     
         render(){
             return(
-                <View style={{alignContent:"center",justifyContent:"center"}}>
+                <View style={{alignItems:"center",justifyContent:"center",flex:1}}>
                     <Text>Logo Jungla</Text>
                 </View>
             );

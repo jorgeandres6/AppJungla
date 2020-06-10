@@ -7,10 +7,6 @@ import {storage} from './config';
 
 function Totales (props){
 
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const [text,setText] = useState('');
-
   let cuentasfin = [{usuario:Firebase.auth().currentUser.email,subtotal:0,utilidad:0,total:0}];
 
   const porcentajeUtilidad = 0.1;
@@ -26,7 +22,7 @@ function Totales (props){
     for (let i=0; i<props.lista.length; i++){
 
       listaArray[i].nombreUsuario = props.usuarios[props.arrayUsers[i]].correo;
-      totales[props.arrayUsers[i]] = totales[props.arrayUsers[i]] + props.lista[i].total;
+      totales[props.arrayUsers[i]] = totales[props.arrayUsers[i]] + props.lista[i].total + props.lista[i].cf_opciones;
     }
 
     let divisionAux=(totales[props.usuarios.length-1]/(props.usuarios.length-1)).toFixed(2);
@@ -43,7 +39,7 @@ function Totales (props){
 
     let totales = 0;
     for (let i=0; i<props.lista.length; i++){
-      totales = totales + props.lista[i].total;
+      totales = totales + props.lista[i].total + props.lista[i].cf_opciones;
     }
     cuentasfin[0].subtotal = totales.toFixed(2);
     cuentasfin[0].utilidad = (totales*porcentajeUtilidad).toFixed(2);
@@ -94,8 +90,8 @@ function Lista (props){
        <Card.Content>
         <Title style={{fontWeight:'bold'}}>{item.producto}</Title>
         <Paragraph><Text style={{fontWeight:'bold'}}>Cantidad:</Text> {item.cantidad}</Paragraph>
-        <Paragraph><Text style={{fontWeight:'bold'}}>Precio unitario:</Text> {item.costo} USD</Paragraph>
-        <Paragraph><Text style={{fontWeight:'bold'}}>Precio total:</Text> {item.total} USD</Paragraph>
+        <Paragraph><Text style={{fontWeight:'bold'}}>Precio unitario:</Text> {item.costo + item.cf_opciones} USD</Paragraph>
+        <Paragraph><Text style={{fontWeight:'bold'}}>Precio total:</Text> {item.total  + item.cf_opciones} USD</Paragraph>
         </Card.Content>
 
         <Card.Actions style={{justifyContent:"space-around", flexWrap:"wrap"}}>

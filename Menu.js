@@ -124,10 +124,10 @@ export default class Carta extends React.Component{
       var urlsAux = {};
       locales.forEach((element,i) => {
         storage.ref().child('comercios/'+tipo+'/'+comercio+'/'+element).getDownloadURL().then((url) => {
-          console.log(element)
+          //console.log(element)
           urlsAux[element]=url;
           this.setState({urls:urlsAux})
-          console.log(this.state.urls)
+          //console.log(this.state.urls)
         }).catch((e) => {
           //console.log(e);
           //urlsAux.push('./assets/LogosDefault/Logo.jpg');
