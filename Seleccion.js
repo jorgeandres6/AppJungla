@@ -7,11 +7,13 @@ import { getProductos } from './httpService';
 
 function Locales (props){
 
+ //console.log(props.locales)
 
   const comercios = props.locales.map((local,i) =>
   
     <Card
     onPress={() => {
+      //console.log(local.nombre)
       props.navegar.navigate('Carta',{comercio:local.nombre, tipo:props.tipo})
       //console.log(ImagenCover('W','discosybares','Disco1.jpg'))
     }}

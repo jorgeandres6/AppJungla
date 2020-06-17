@@ -1,11 +1,14 @@
 import React, {useState} from 'react';
-import { ScrollView, View, Modal, Text, Alert} from 'react-native';
-import { Chip, Button, Paragraph, Card, Subheading, Title, FAB, TextInput} from 'react-native-paper';
+import { ScrollView, View, Text, Alert} from 'react-native';
+import { Chip, Button, Paragraph, Card, Title, FAB, IconButton} from 'react-native-paper';
 import Firebase from 'firebase';
 import {storage} from './config';
+import {connect} from "react-redux";
 
 
 function Totales (props){
+
+  console.log(props.lista)
 
   let cuentasfin = [{usuario:Firebase.auth().currentUser.email,subtotal:0,utilidad:0,total:0}];
 
@@ -92,6 +95,7 @@ function Lista (props){
         <Paragraph><Text style={{fontWeight:'bold'}}>Cantidad:</Text> {item.cantidad}</Paragraph>
         <Paragraph><Text style={{fontWeight:'bold'}}>Precio unitario:</Text> {item.costo + item.cf_opciones} USD</Paragraph>
         <Paragraph><Text style={{fontWeight:'bold'}}>Precio total:</Text> {item.total  + item.cf_opciones} USD</Paragraph>
+        <Paragraph><Text style={{fontWeight:'bold'}}>Opciones:</Text> {item.opciones}</Paragraph>
         </Card.Content>
 
         <Card.Actions style={{justifyContent:"space-around", flexWrap:"wrap"}}>
@@ -122,6 +126,20 @@ function Lista (props){
           >
             Eliminar
           </Button>
+          <View style={{flexDirection:"row-reverse", alignItems:"center"}}>
+            <IconButton 
+            icon='plus-circle-outline'
+            size={40}
+            onPress={()=>{}}
+            />
+            <Text>
+              {item.cantidad}
+            </Text>
+            <IconButton 
+            icon='minus-circle-outline'
+            size={40}
+            onPress={()=>{}}/>
+          </View>
         </Card.Actions>
 
         <Card.Cover source={{ uri: 
@@ -158,7 +176,7 @@ function Lista (props){
 
 }
 
-export default class Carrito extends React.Component{
+class Carrito extends React.Component{
 
     constructor (){
       super();
@@ -172,7 +190,7 @@ export default class Carrito extends React.Component{
 
     componentDidMount(){
       const { listaArray } = this.props.route.params;
-      this.imagenes(listaArray);
+      this.imagenes(this.props.carrito.carrito);
     }
 
     imagenes = (locales) =>{
@@ -205,10 +223,18 @@ export default class Carrito extends React.Component{
         
         
         
-        (listaArray==undefined || listaArray.length<1) ? deshabilitar = true : deshabilitar = false;
+        (this.props.carrito.carrito==undefined || this.props.carrito.carrito.length<1) ? deshabilitar = true : deshabilitar = false;
             
               return (
-                <Lista lista={listaArray} navegar={this.props.navigation} disable={deshabilitar} arrayUsuarios={usuarios} arrayColores={colores} arrayIds={ids} tokens={tokens} urls={this.state.urls}/>
+                <Lista lista={this.props.carrito.carrito} navegar={this.props.navigation} disable={deshabilitar} arrayUsuarios={usuarios} arrayColores={colores} arrayIds={ids} tokens={tokens} urls={this.state.urls}/>
               );
       }
 }
+
+const mapStateToProps = (state) => {
+  return{
+    carrito : state
+  }
+}
+
+export default connect(mapStateToProps)(Carrito)

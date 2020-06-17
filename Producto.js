@@ -1,17 +1,24 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import { View, Image, ScrollView } from 'react-native';
-import { IconButton, Paragraph, Text, Colors, Button, Chip} from 'react-native-paper';
+import { IconButton, Paragraph, Text, Button, Chip} from 'react-native-paper';
 import Firebase from 'firebase';
+import {AgregarItem} from './store/Producto/action';
+import {connect} from "react-redux";
 //import { ScrollView } from 'react-native-gesture-handler';
 
 function Opciones(props) {
+
+  useEffect(() => {
+    //props.AgregarItem("Hola");
+    //props.agregar("Hola");
+  },[])
 
   const colores = ['aliceblue','dodgerblue','deeppink','orange','mediumspringgreen'
                   ,'navajowhite','burlywood','pink','skyblue','gainsboro','gold','lightcoral'
                   ,'lightsteelblue','mistyrose','palegreen'];
 
 
-  agregarCarrito = () => {
+  var agregarCarrito = () => {
     let carrito = [];
     let ptotal = props.contador * props.precio;
     if (props.listaArray!=undefined){
@@ -22,6 +29,18 @@ function Opciones(props) {
     //console.log(carrito);
     props.navigation.navigate('Carta',{listaArray:carrito});
   }  
+
+  let articulo = {
+    opciones:props.keys, 
+    cf_opciones:props.cf, 
+    producto:props.nombre,
+    cantidad:props.contador,
+    costo:props.precio,
+    comercio:props.local,
+    total:props.contador * props.precio,
+    usuario:0,nombreUsuario:Firebase.auth().currentUser.email, 
+    cover:props.cover
+  };
 
   var opciones = '';
 
@@ -62,6 +81,7 @@ function Opciones(props) {
       </ScrollView>
       <IconButton 
       icon='plus-circle-outline'
+      size={40}
       onPress={props.aumentarCantidad}
       />
       <Text>
@@ -69,11 +89,15 @@ function Opciones(props) {
       </Text>
       <IconButton 
       icon='minus-circle-outline'
+      size={40}
       onPress={props.disminuirCantidad}/>
       <Button
       mode="contained"
       compact={false}
-      onPress={() => agregarCarrito()}
+      onPress={() => {
+        props.agregarCarrito(articulo),
+        props.navigation.navigate('Carta');
+      }}
       icon="cart-plus"
       >   
         {'Agregar al carrito $'+(props.precio*props.contador+props.cf)}
@@ -83,7 +107,7 @@ function Opciones(props) {
   
 }
 
-export default class Producto extends React.Component{
+class Producto extends React.Component{
 
     constructor (){
       super();
@@ -101,6 +125,7 @@ export default class Producto extends React.Component{
     }
 
     disminuirCantidad = () => {
+      //console.log(this.props.carrito.carrito[0]);
       if (this.state.contador > 1){
         this.setState({contador:this.state.contador-1});
       }
@@ -127,6 +152,8 @@ export default class Producto extends React.Component{
     }
 
     componentDidMount(){
+      //this.props.agregar("Hola");
+      //console.log(this.props);
       const { opc } = this.props.route.params;
       if (opc){
         let pos_opc_aux= new Array(opc.length);
@@ -147,16 +174,34 @@ export default class Producto extends React.Component{
     }
   
       render(){
+
             const { nombre } = this.props.route.params;
             const { precio } = this.props.route.params;
             const { descripcion } = this.props.route.params;
             const { cover } = this.props.route.params;
             const { opc } = this.props.route.params;
-            const { local } = this.props.route.params;
+            const { comercio } = this.props.route.params;
             const { listaArray } = this.props.route.params;
 
+            console.log(comercio)
+
               return (
-                     <Opciones cf={this.state.cf} keys={this.state.opc_keys} pos_opc={this.state.pos_opc} cambiarPos={this.cambiarPos} opc={opc} descripcion={descripcion} precio={precio} aumentarCantidad={this.aumentarCantidad} disminuirCantidad={this.disminuirCantidad} contador={this.state.contador} nombre={nombre} cover={cover} local={local} listaArray={listaArray} navigation={this.props.navigation}/>
+                     <Opciones agregarCarrito={this.props.agregar} cf={this.state.cf} keys={this.state.opc_keys} pos_opc={this.state.pos_opc} cambiarPos={this.cambiarPos} opc={opc} descripcion={descripcion} precio={precio} aumentarCantidad={this.aumentarCantidad} disminuirCantidad={this.disminuirCantidad} contador={this.state.contador} nombre={nombre} cover={cover} local={comercio} listaArray={listaArray} navigation={this.props.navigation}/>
               );           
       }
   }
+
+  const mapDispatchToProps = dispatch => {
+    return{
+      agregar: (item) => dispatch(AgregarItem(item))
+    } 
+  }
+
+  const mapStateToProps = (state) => {
+    console.log(state)
+    return{
+      carrito : state
+    }
+  }
+
+  export default connect(mapStateToProps,mapDispatchToProps)(Producto)

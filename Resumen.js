@@ -7,7 +7,7 @@ import Firebase from 'firebase';
 
 function ResumenCuenta (props) {
     
-    //console.log(props.cuentasfin);
+    console.log(props.listaArray);
 
     const [modalVisible, setModalVisible] = useState(false);
 

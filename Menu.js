@@ -3,6 +3,7 @@ import { ScrollView, View, ActivityIndicator, Text } from 'react-native';
 import { Card, Title, Paragraph, Chip, Button} from 'react-native-paper';
 import { getMenu } from './httpService';
 import {storage} from './config';
+import {connect} from "react-redux";
 
 function MenuI (props){
   
@@ -11,7 +12,7 @@ function MenuI (props){
 
   const menuI = props.menu.map((item,i) =>
     <Card
-      onPress={() => props.navegar.navigate('Producto',{nombre:item.nombre,descripcion:item.desc,precio:item.precio,listaArray:props.lista,local:props.local,tipo:item.tipo, cover:props.urls[item.cover], opc:item.opc})}
+      onPress={() => props.navegar.navigate('Producto',{nombre:item.nombre,descripcion:item.desc,precio:item.precio,listaArray:props.lista, comercio:props.comercio,tipo:item.tipo, cover:props.urls[item.cover], opc:item.opc})}
       //onPress={() => this.setState({productos2:this.state.productos[0].nombre})}
       //style={{backgroundColor:'red'}}
       key={item.nombre}
@@ -39,11 +40,10 @@ function MenuI (props){
 
 function Menu (props){
 
-  //console.log(props.menuI)
   const menu=props.menuI.map((item,i) =>
       <View key={i}>
       <Text style={{alignSelf:"center",fontWeight:"bold", fontSize:30}}>{props.menu[i]}</Text>
-      <MenuI menu={props.menuI[i]} urls={props.urls} lista={props.lista} tipo={props.tipo} navegar={props.navegar}/>
+      <MenuI menu={props.menuI[i]} urls={props.urls} lista={props.lista} tipo={props.tipo} navegar={props.navegar} comercio={props.comercio}/>
       </View>
     );
   
@@ -66,7 +66,7 @@ function Menu (props){
     );
   }
 
-export default class Carta extends React.Component{
+class Carta extends React.Component{
 
     constructor (){
       super();
@@ -140,11 +140,13 @@ export default class Carta extends React.Component{
   
       render(){
 
+
         const { listaArray } = this.props.route.params;
         const { comercio } = this.props.route.params;
         const { tipo } = this.props.route.params;
         let deshabilitar = true;
-        (listaArray==undefined || listaArray.length<1) ? deshabilitar = true : deshabilitar = false;
+
+        (this.props.carrito.carrito==undefined || this.props.carrito.carrito.length<1) ? deshabilitar = true : deshabilitar = false;
             if (this.state.productos2.length < 1 && this.state.productos.length < 1){
               return (
                 <View style={{justifyContent:'center', alignItems:'center', flex:1}}>
@@ -160,3 +162,17 @@ export default class Carta extends React.Component{
             }
       }
   }
+
+  const mapDispatchToProps = dispatch => {
+    return{
+      agregar: (item) => dispatch(AgregarItem(item))
+    } 
+  }
+
+  const mapStateToProps = (state) => {
+    return{
+      carrito : state
+    }
+  }
+
+  export default connect(mapStateToProps,mapDispatchToProps)(Carta)
