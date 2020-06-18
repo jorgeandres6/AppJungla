@@ -4,11 +4,12 @@ import { Chip, Button, Paragraph, Card, Title, FAB, IconButton} from 'react-nati
 import Firebase from 'firebase';
 import {storage} from './config';
 import {connect} from "react-redux";
+import {AumentarItem} from "./store/action";
+import {DisminuirItem} from "./store/action";
+import {EliminarItem} from "./store/action";
 
 
 function Totales (props){
-
-  console.log(props.lista)
 
   let cuentasfin = [{usuario:Firebase.auth().currentUser.email,subtotal:0,utilidad:0,total:0}];
 
@@ -25,7 +26,7 @@ function Totales (props){
     for (let i=0; i<props.lista.length; i++){
 
       listaArray[i].nombreUsuario = props.usuarios[props.arrayUsers[i]].correo;
-      totales[props.arrayUsers[i]] = totales[props.arrayUsers[i]] + props.lista[i].total + props.lista[i].cf_opciones;
+      totales[props.arrayUsers[i]] = totales[props.arrayUsers[i]] + props.lista[i].total;
     }
 
     let divisionAux=(totales[props.usuarios.length-1]/(props.usuarios.length-1)).toFixed(2);
@@ -42,7 +43,7 @@ function Totales (props){
 
     let totales = 0;
     for (let i=0; i<props.lista.length; i++){
-      totales = totales + props.lista[i].total + props.lista[i].cf_opciones;
+      totales = totales + props.lista[i].total;
     }
     cuentasfin[0].subtotal = totales.toFixed(2);
     cuentasfin[0].utilidad = (totales*porcentajeUtilidad).toFixed(2);
@@ -94,7 +95,7 @@ function Lista (props){
         <Title style={{fontWeight:'bold'}}>{item.producto}</Title>
         <Paragraph><Text style={{fontWeight:'bold'}}>Cantidad:</Text> {item.cantidad}</Paragraph>
         <Paragraph><Text style={{fontWeight:'bold'}}>Precio unitario:</Text> {item.costo + item.cf_opciones} USD</Paragraph>
-        <Paragraph><Text style={{fontWeight:'bold'}}>Precio total:</Text> {item.total  + item.cf_opciones} USD</Paragraph>
+        <Paragraph><Text style={{fontWeight:'bold'}}>Precio total:</Text> {item.total} USD</Paragraph>
         <Paragraph><Text style={{fontWeight:'bold'}}>Opciones:</Text> {item.opciones}</Paragraph>
         </Card.Content>
 
@@ -119,18 +120,11 @@ function Lista (props){
               {props.arrayUsuarios != undefined?props.arrayUsuarios[users[index]].correo:Firebase.auth().currentUser.email}
             </Text>
           </Chip>
-          <Button
-             onPress={() => props.navegar.navigate('Eliminar',{listaArray:array, indice:index})}
-             icon="cart-remove"
-             mode="outlined"
-          >
-            Eliminar
-          </Button>
           <View style={{flexDirection:"row-reverse", alignItems:"center"}}>
             <IconButton 
             icon='plus-circle-outline'
             size={40}
-            onPress={()=>{}}
+            onPress={()=>{props.aumentar(index)}}
             />
             <Text>
               {item.cantidad}
@@ -138,7 +132,29 @@ function Lista (props){
             <IconButton 
             icon='minus-circle-outline'
             size={40}
-            onPress={()=>{}}/>
+            onPress={()=>{
+              if (item.cantidad==1){
+                Alert.alert(
+                  "Eliminar item",
+                  "Desea eliminar este item?",
+                  [
+                    {
+                      text:"OK",
+                      onPress: () => props.eliminar(index),
+                      style: "OK"
+                    },
+                    {
+                      text:"Cancelar",
+                      onPress: () => {},
+                      style: "Cancel"
+                    }
+                  ]
+                )
+              }else{
+                props.disminuir(index);
+              }
+
+            }}/>
           </View>
         </Card.Actions>
 
@@ -198,7 +214,9 @@ class Carrito extends React.Component{
       const { comercio } = this.props.route.params;
       var urlsAux = new Array(locales.length);
       locales.forEach((element,i) => {
-        storage.ref().child('comercios/'+tipo+'/'+comercio+'/'+element.cover).getDownloadURL().then((url) => {
+        urlsAux[i]=element.cover;
+        this.setState({urls:urlsAux})
+          /*storage.ref().child('comercios/'+tipo+'/'+comercio+'/'+element.cover).getDownloadURL().then((url) => {
           urlsAux[i]=url;
           this.setState({urls:urlsAux})
           console.log(this.state.urls)
@@ -207,7 +225,7 @@ class Carrito extends React.Component{
           //urlsAux.push('./assets/LogosDefault/Logo.jpg');
           //this.setState({urls:urlsAux})
           //console.log(this.state.urls)
-        }) 
+        })*/ 
       })
     }
 
@@ -221,14 +239,20 @@ class Carrito extends React.Component{
         const { tipo } = this.props.route.params;
         let deshabilitar = true;
         
-        
-        
         (this.props.carrito.carrito==undefined || this.props.carrito.carrito.length<1) ? deshabilitar = true : deshabilitar = false;
             
               return (
-                <Lista lista={this.props.carrito.carrito} navegar={this.props.navigation} disable={deshabilitar} arrayUsuarios={usuarios} arrayColores={colores} arrayIds={ids} tokens={tokens} urls={this.state.urls}/>
+                <Lista disminuir={this.props.disminuir} eliminar={this.props.eliminar} aumentar={this.props.aumentar} lista={this.props.carrito.carrito} navegar={this.props.navigation} disable={deshabilitar} arrayUsuarios={usuarios} arrayColores={colores} arrayIds={ids} tokens={tokens} urls={this.state.urls}/>
               );
       }
+}
+
+const mapDispatchToProps = dispatch => {
+  return{
+    aumentar: (index) => dispatch(AumentarItem(index)),
+    disminuir: (index) => dispatch(DisminuirItem(index)),
+    eliminar: (index) => dispatch(EliminarItem(index)),
+  } 
 }
 
 const mapStateToProps = (state) => {
@@ -237,4 +261,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(Carrito)
+export default connect(mapStateToProps,mapDispatchToProps)(Carrito)

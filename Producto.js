@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import { View, Image, ScrollView } from 'react-native';
 import { IconButton, Paragraph, Text, Button, Chip} from 'react-native-paper';
 import Firebase from 'firebase';
-import {AgregarItem} from './store/Producto/action';
+import {AgregarItem} from './store/action';
 import {connect} from "react-redux";
 //import { ScrollView } from 'react-native-gesture-handler';
 
@@ -37,7 +37,7 @@ function Opciones(props) {
     cantidad:props.contador,
     costo:props.precio,
     comercio:props.local,
-    total:props.contador * props.precio,
+    total:props.contador * (props.precio + props.cf),
     usuario:0,nombreUsuario:Firebase.auth().currentUser.email, 
     cover:props.cover
   };

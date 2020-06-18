@@ -1,5 +1,5 @@
 import { createStore, combineReducers } from 'redux';
-import carritoReducer from './Producto/reducer';
+import carritoReducer from './reducer';
 
 const configureStore = () => createStore(carritoReducer);
 
