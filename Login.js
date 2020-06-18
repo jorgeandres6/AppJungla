@@ -7,6 +7,9 @@ import {_handleNotification, sendPushNotification} from './PushService';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
 import {RegistrarToken} from './httpService';
+import {connect} from 'react-redux'
+import {AgregarUsuario} from "./store/action";
+
 
 function avisoEmail () {
   Firebase.auth().currentUser.sendEmailVerification().then(
@@ -21,7 +24,7 @@ function avisoEmail () {
    );
 }
 
-export default class Login extends React.Component{
+class Login extends React.Component{
 
   constructor (){
     super();
@@ -119,8 +122,8 @@ export default class Login extends React.Component{
                         this.setState({activityVisible:false});
                         //this.props.navigation.navigate('Seleccion');
                         unsubscribe();
-                        console.log(this.state.email);
-                        console.log(this.state.expoPushToken);
+                        //console.log(this.state.email);
+                        //console.log(this.state.expoPushToken);
                         RegistrarToken (this.state.expoPushToken,Firebase.auth().currentUser.uid);
                         this.props.navigation.reset({
                           index:0,
@@ -225,3 +228,11 @@ export default class Login extends React.Component{
           );
     }
 }
+
+const mapDispatchToProps = dispatch => {
+  return{
+    agregar: (usuario) => dispatch(AgregarUsuario(usuario)),
+  } 
+}
+
+export default connect(null,mapDispatchToProps)(Login)

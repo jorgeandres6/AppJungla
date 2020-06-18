@@ -25,3 +25,27 @@ export const EliminarItem = (indice) => (
         indice
     }
 );
+
+export const AgregarUsuario = (correo,id,token) => (
+    {
+        type: 'AGREGAR_USUARIO',
+        usuario: {
+            correo: correo,
+            id: id,
+            token: token
+        }
+    }
+);
+
+export const EliminarUsuario = (usuario) => (
+    {
+        type: 'ELIMINAR_USUARIO',
+        usuario 
+    }
+);
+
+export const VaciarUsuarios = () => (
+    {
+        type: 'VACIAR_USUARIOS',
+    }
+);

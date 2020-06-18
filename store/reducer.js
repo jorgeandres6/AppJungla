@@ -1,4 +1,4 @@
-const initialState = { carrito: [] };
+const initialState = { carrito: [], usuarios: [] };
 
 export default carritoReducer = (state = initialState, action) => {
     switch (action.type){
@@ -29,6 +29,21 @@ export default carritoReducer = (state = initialState, action) => {
             return ({
                 ...state, 
                 carrito: arre
+            })
+         case 'AGREGAR_USUARIO':
+            return ({
+                ...state, 
+                usuarios: state.usuarios.concat(action.usuario)
+            })
+         case 'ELIMINAR_USUARIO':
+            return ({
+                ...state, 
+                usuarios: state.usuarios.filter(item => item!=action.usuario)
+            })
+         case 'VACIAR_USUARIOS':
+            return ({
+                ...state, 
+                usuarios: []
             })
         default:
             return state;

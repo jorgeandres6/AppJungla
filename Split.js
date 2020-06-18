@@ -3,6 +3,9 @@ import { ScrollView, View, Text } from 'react-native';
 import { TextInput, Title, Chip, Button} from 'react-native-paper';
 import { addUsuarios } from './httpService';
 import Firebase from 'firebase';
+import {connect} from "react-redux";
+import {AgregarUsuario} from "./store/action";
+import {EliminarUsuario} from "./store/action";
 
 function Lista (props){
     const menu = props.lista.map((item,index) =>
@@ -27,7 +30,7 @@ function Lista (props){
 
 }
 
-export default class Split extends React.Component{
+class Split extends React.Component{
 
     constructor (){
       super();
@@ -40,7 +43,7 @@ export default class Split extends React.Component{
       }
     }
 
-    agregarUsuario = (item, itemId) =>{
+    /*agregarUsuario = (item, itemId) =>{
       let arrayUsuario = this.state.usuarios;
       arrayUsuario.push(item);
       this.setState({usuarios:arrayUsuario});
@@ -54,6 +57,20 @@ export default class Split extends React.Component{
         arraytokens.push(item.token);
         this.setState({tokens:arraytokens})
       }
+    }*/
+
+    agregarUsuario = (item) =>{
+      let correo = item[Object.keys(item)].correo;
+      let token = item[Object.keys(item)].token;
+      let id = Object.getOwnPropertyNames(item)[0];
+      this.props.agregar(correo,id,token);
+      alert('Usuario '+correo+' agregado correctamente');
+      //console.log(this.props.usuarios);
+      /*if (item.token != ''){
+        let arraytokens = this.state.tokens;
+        arraytokens.push(item.token);
+        this.setState({tokens:arraytokens})
+      }*/
     }
 
     render(){
@@ -79,8 +96,7 @@ export default class Split extends React.Component{
             <Button
             onPress={() => {
               addUsuarios(this.state.text).then(dataSnapshot => {
-                console.log(dataSnapshot.val())
-                dataSnapshot.val() != null ? this.agregarUsuario(dataSnapshot.val()[Object.keys(dataSnapshot.val())],Object.getOwnPropertyNames(dataSnapshot.val())[0]):alert("El usuario no esta registrado");
+                dataSnapshot.val() != null ? this.agregarUsuario(dataSnapshot.val()):alert("El usuario no esta registrado");
               });
             }}
             icon="account-plus-outline"
@@ -90,7 +106,7 @@ export default class Split extends React.Component{
               Agregar
             </Button>
           </View>
-          <Lista lista={this.state.usuarios} colores={this.state.colores} navegar={this.props.navigation}/>
+          <Lista lista={this.props.usuarios} colores={this.state.colores} navegar={this.props.navigation}/>
           <View>
             <Button
             onPress={() => {
@@ -109,6 +125,19 @@ export default class Split extends React.Component{
         </>
       )
     }
-
-
 }
+
+const mapDispatchToProps = dispatch => {
+  return{
+    agregar: (correo,id,token) => dispatch(AgregarUsuario(correo,id,token)),
+    eliminar: (usuario) => dispatch(EliminarUsuario(usuario))
+  } 
+}
+
+const mapStateToProps = (state) => {
+  return{
+    usuarios : state.usuarios
+  }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Split)

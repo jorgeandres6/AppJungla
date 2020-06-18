@@ -5,8 +5,11 @@ import { Button} from 'react-native-paper';
 import { getProductos } from './httpService';
 import Firebase from 'firebase';
 import {BorrarToken} from './httpService';
+import {connect} from "react-redux";
+import {VaciarUsuarios} from "./store/action";
+import {AgregarUsuario} from "./store/action";
 
-export default class Tipo extends React.Component{
+class Tipo extends React.Component{
 
     constructor (){
       super();
@@ -38,7 +41,8 @@ export default class Tipo extends React.Component{
     }*/
 
     componentDidMount(){
-      console.log(Firebase.auth().currentUser);
+      //console.log(Firebase.auth().currentUser);
+      this.props.agregar(Firebase.auth().currentUser.email);
     }
 
     /*componentWillUnmount(){
@@ -61,6 +65,8 @@ export default class Tipo extends React.Component{
       BorrarToken(Firebase.auth().currentUser.uid);
       Firebase.auth().signOut().then(
         () => {
+          this.props.eliminar_usuarios();
+          BackHandler.removeEventListener('hardwareBackPress', this.handlerBA);
           this.props.navigation.reset({
             index:0,
             routes: [{
@@ -107,8 +113,9 @@ export default class Tipo extends React.Component{
                 <Button
                 onPress = {()=>{
                   //this._unsubscribe();
-                  BackHandler.removeEventListener('hardwareBackPress', this.handlerBA);
+                  //BackHandler.removeEventListener('hardwareBackPress', this.handlerBA);
                   this.logout();
+                  //this.setState({modalVisible:false});
                   }}
                 >
                     Logout
@@ -146,15 +153,8 @@ export default class Tipo extends React.Component{
                       Desea salir?
                     </Text>
                     <Button onPress={() => {
-                    this.setState({modalVisible:false});
-                    {Firebase.auth().signOut().then(
-                      () => {
-                        this.props.navigation.navigate('Login');
-                      }
-                    ).catch(
-                      (error) => {alert(error)}
-                    )
-                    }
+                      this.setState({modalVisible:false});
+                      this.logout();
                     }}
                     icon="logout">
                       OK
@@ -172,3 +172,12 @@ export default class Tipo extends React.Component{
         )
     }
 }
+
+const mapDispatchToProps = dispatch => {
+  return{
+    eliminar_usuarios: () => dispatch(VaciarUsuarios()),
+    agregar: (usuario) => dispatch(AgregarUsuario(usuario))
+  } 
+}
+
+export default connect(null,mapDispatchToProps)(Tipo)
