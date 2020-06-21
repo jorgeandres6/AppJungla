@@ -42,7 +42,7 @@ class Tipo extends React.Component{
 
     componentDidMount(){
       //console.log(Firebase.auth().currentUser);
-      this.props.agregar(Firebase.auth().currentUser.email);
+      this.props.agregar(Firebase.auth().currentUser.email,Firebase.auth().currentUser.uid);
     }
 
     /*componentWillUnmount(){
@@ -176,7 +176,7 @@ class Tipo extends React.Component{
 const mapDispatchToProps = dispatch => {
   return{
     eliminar_usuarios: () => dispatch(VaciarUsuarios()),
-    agregar: (usuario) => dispatch(AgregarUsuario(usuario))
+    agregar: (usuario,id) => dispatch(AgregarUsuario(usuario,id))
   } 
 }
 

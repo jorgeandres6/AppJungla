@@ -11,13 +11,16 @@ import {EliminarItem} from "./store/action";
 
 function Totales (props){
 
+  //console.log(props);
+
   let cuentasfin = [{usuario:Firebase.auth().currentUser.email,subtotal:0,utilidad:0,total:0}];
 
   const porcentajeUtilidad = 0.1;
   
   let listaArray = props.lista.slice();
 
-  if (props.usuarios != undefined){
+  //if (props.usuarios != undefined){
+  if (props.usuarios.length > 2){
     let cuentas = new Array(props.usuarios.length);
     let totales = new Array(props.usuarios.length);
     totales.fill(0);
@@ -32,12 +35,13 @@ function Totales (props){
     let divisionAux=(totales[props.usuarios.length-1]/(props.usuarios.length-1)).toFixed(2);
 
     props.usuarios.length > 2 ? division = parseFloat(divisionAux): division = 1;
-
     
     for (let j=0; j<props.usuarios.length; j++){
       cuentas[j] = {usuario:props.usuarios[j].correo, subtotal:(parseFloat(totales[j])+division).toFixed(2), utilidad:((parseFloat(totales[j])+division)*porcentajeUtilidad).toFixed(2), total:((parseFloat(totales[j])+division)*(1+porcentajeUtilidad)).toFixed(2), servicio:porcentajeUtilidad, comercio:props.lista[0].comercio, pagado:false};
     };
     cuentasfin = cuentas.slice(0,cuentas.length-1);
+
+    console.log(cuentasfin)
 
   }else{
 
@@ -69,7 +73,10 @@ function Totales (props){
     alignSelf:'center',
     bottom: 100}}
     icon="cash-usd"
-    label={"Pagar Total: $"+cuentasfin[0].total+" USD"}
+    label={
+      "Pagar Total: $"+cuentasfin[0].total+" USD"
+      //"Pagar Total: $ USD"
+    }
     onPress = {() => {
       props.navegar.navigate('Checkout',{cuenta:cuentasfin, lista:listaArray, users:props.usuarios, ids:props.ids, pendiente:false, tokens:props.tokens})
     }}
@@ -117,7 +124,9 @@ function Lista (props){
           style={{backgroundColor:props.arrayColores != undefined?props.arrayColores[users[index]]:"grey" }}
           >
             <Text style={{color:'white'}}> 
-              {props.arrayUsuarios != undefined?props.arrayUsuarios[users[index]].correo:Firebase.auth().currentUser.email}
+              {
+                props.arrayUsuarios != undefined?props.arrayUsuarios[users[index]].correo:Firebase.auth().currentUser.email
+              }
             </Text>
           </Chip>
           <View style={{flexDirection:"row-reverse", alignItems:"center"}}>
@@ -205,8 +214,7 @@ class Carrito extends React.Component{
     }
 
     componentDidMount(){
-      const { listaArray } = this.props.route.params;
-      this.imagenes(this.props.carrito.carrito);
+      this.imagenes(this.props.carrito);
     }
 
     imagenes = (locales) =>{
@@ -239,10 +247,10 @@ class Carrito extends React.Component{
         const { tipo } = this.props.route.params;
         let deshabilitar = true;
         
-        (this.props.carrito.carrito==undefined || this.props.carrito.carrito.length<1) ? deshabilitar = true : deshabilitar = false;
+        (this.props.carrito==undefined || this.props.carritolength<1) ? deshabilitar = true : deshabilitar = false;
             
               return (
-                <Lista disminuir={this.props.disminuir} eliminar={this.props.eliminar} aumentar={this.props.aumentar} lista={this.props.carrito.carrito} navegar={this.props.navigation} disable={deshabilitar} arrayUsuarios={usuarios} arrayColores={colores} arrayIds={ids} tokens={tokens} urls={this.state.urls}/>
+                <Lista disminuir={this.props.disminuir} eliminar={this.props.eliminar} aumentar={this.props.aumentar} lista={this.props.carrito} navegar={this.props.navigation} disable={deshabilitar} arrayUsuarios={this.props.usuarios} arrayColores={colores} arrayIds={ids} tokens={tokens} urls={this.state.urls}/>
               );
       }
 }
@@ -257,7 +265,8 @@ const mapDispatchToProps = dispatch => {
 
 const mapStateToProps = (state) => {
   return{
-    carrito : state
+    carrito: state.carrito,
+    usuarios: state.usuarios
   }
 }
 

@@ -47,16 +47,18 @@ export function registrarTicket (objeto,ids,totales,tipoPago){
     var idstemp = [];
     numTemp = Math.floor(Math.random()*100000);
 
-    let tsAUX = 'R'+totales[0].comercio+ids[0].substr(0,2)+Date.now();
+    let tsAUX = 'R'+totales[0].comercio+ids[0].id.substr(0,2)+Date.now();
 
-    for (var i=0; i<ids.length; i++){
+    for (var i=0; i<ids.length-1; i++){
       let ts = tsAUX+(i+1)+'_'+ids.length;
       let CU = totales[i].usuario+'_false';
       let CC = totales[0].comercio+'_false';
-      let idtemp = totales[0].comercio+ids[i].substr(0,2)+numTemp;
+      let idtemp = totales[0].comercio+ids[i].id.substr(0,2)+numTemp;
       idstemp.push(idtemp);
       let ticket = {};
       Object.assign(ticket,{resumen:objeto},totales[i],{a:year,m:month,d:date,hh:hours,mm:min,tipoPago:tipoPago,CU:CU,CC:CC,idtemp:idtemp});
+      console.log("AQUIIII")
+      console.log(ticket)
       db.ref('/recibos/'+ts).set(ticket);
     }
     return(idstemp[0]); 

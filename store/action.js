@@ -26,6 +26,12 @@ export const EliminarItem = (indice) => (
     }
 );
 
+export const VaciarCarrito = () => (
+    {
+        type: 'VACIAR_CARRITO'
+    }
+);
+
 export const AgregarUsuario = (correo,id,token) => (
     {
         type: 'AGREGAR_USUARIO',

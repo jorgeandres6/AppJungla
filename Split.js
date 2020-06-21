@@ -95,9 +95,14 @@ class Split extends React.Component{
             />
             <Button
             onPress={() => {
-              addUsuarios(this.state.text).then(dataSnapshot => {
-                dataSnapshot.val() != null ? this.agregarUsuario(dataSnapshot.val()):alert("El usuario no esta registrado");
-              });
+              if (this.props.usuarios.find(element => element.correo == this.state.text)){
+                alert('El usuario ya esta agregado');
+              }else{
+                addUsuarios(this.state.text).then(dataSnapshot => {
+                  dataSnapshot.val() != null ? this.agregarUsuario(dataSnapshot.val()):alert("El usuario no esta registrado");
+                });
+              }
+              this.setState({text:''});
             }}
             icon="account-plus-outline"
             mode="text"

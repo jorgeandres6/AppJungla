@@ -2,15 +2,17 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import { Button, Subheading, Headline} from 'react-native-paper';
 import QRCode from 'react-native-qrcode-svg';
+import {connect} from "react-redux";
+import {VaciarCarrito} from './store/action';
 
-export default class Dinero extends React.Component{
+class Dinero extends React.Component{
 
     constructor (){
       super();
     }
 
     componentDidMount(){
-      
+      this.props.vaciarCarrito();
     }
 
     render(){
@@ -51,3 +53,11 @@ export default class Dinero extends React.Component{
       )
     }
 }
+
+const mapDispatchToProps = dispatch => {
+  return{
+    vaciarCarrito: () => dispatch(VaciarCarrito())
+  } 
+}
+
+export default connect(null,mapDispatchToProps)(Dinero)

@@ -27,9 +27,10 @@ function _handleNotification (notification) {
     });
   };
 
-  function nuevosRecibos(tokens){
-    tokens.forEach(element => {
-      sendPushNotification(element,'Nuevo recibo pendiente','Tienes un recibo por cancelar')
+  function nuevosRecibos(usuarios){
+    usuarios.forEach(element => {
+      console.log(element);
+      sendPushNotification(element.token,'Nuevo recibo pendiente','Tienes un recibo por cancelar')
     });
   }
 

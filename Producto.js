@@ -8,10 +8,7 @@ import {connect} from "react-redux";
 
 function Opciones(props) {
 
-  useEffect(() => {
-    //props.AgregarItem("Hola");
-    //props.agregar("Hola");
-  },[])
+  //console.log(props)
 
   const colores = ['aliceblue','dodgerblue','deeppink','orange','mediumspringgreen'
                   ,'navajowhite','burlywood','pink','skyblue','gainsboro','gold','lightcoral'
@@ -65,7 +62,7 @@ function Opciones(props) {
       )
     })
   }else{
-    return null;
+    opciones = null;
   }
 
   return(
@@ -153,7 +150,8 @@ class Producto extends React.Component{
 
     componentDidMount(){
       //this.props.agregar("Hola");
-      //console.log(this.props);
+      //const { cover } = this.props.route.params;
+      //console.log(cover);
       const { opc } = this.props.route.params;
       if (opc){
         let pos_opc_aux= new Array(opc.length);
@@ -166,7 +164,7 @@ class Producto extends React.Component{
           cf = cf+element[keys_aux[i]];
           return Object.keys(element);
         })
-        console.log(cf);
+        //console.log(cf);
         this.setState({cf:cf});
         this.setState({opc_keys:keys_aux});
         this.setState({total_keys:op_aux});
@@ -183,8 +181,6 @@ class Producto extends React.Component{
             const { comercio } = this.props.route.params;
             const { listaArray } = this.props.route.params;
 
-            console.log(comercio)
-
               return (
                      <Opciones agregarCarrito={this.props.agregar} cf={this.state.cf} keys={this.state.opc_keys} pos_opc={this.state.pos_opc} cambiarPos={this.cambiarPos} opc={opc} descripcion={descripcion} precio={precio} aumentarCantidad={this.aumentarCantidad} disminuirCantidad={this.disminuirCantidad} contador={this.state.contador} nombre={nombre} cover={cover} local={comercio} listaArray={listaArray} navigation={this.props.navigation}/>
               );           
@@ -198,7 +194,6 @@ class Producto extends React.Component{
   }
 
   const mapStateToProps = (state) => {
-    console.log(state)
     return{
       carrito : state
     }

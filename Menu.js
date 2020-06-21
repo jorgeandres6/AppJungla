@@ -12,7 +12,10 @@ function MenuI (props){
 
   const menuI = props.menu.map((item,i) =>
     <Card
-      onPress={() => props.navegar.navigate('Producto',{nombre:item.nombre,descripcion:item.desc,precio:item.precio,listaArray:props.lista, comercio:props.comercio,tipo:item.tipo, cover:props.urls[item.cover], opc:item.opc})}
+      onPress={() => {
+        //console.log(item);
+        props.navegar.navigate('Producto',{nombre:item.nombre,descripcion:item.desc,precio:item.precio,listaArray:props.lista, comercio:props.comercio,tipo:item.tipo, cover:props.urls[item.cover], opc:item.opc})
+      }}
       //onPress={() => this.setState({productos2:this.state.productos[0].nombre})}
       //style={{backgroundColor:'red'}}
       key={item.nombre}

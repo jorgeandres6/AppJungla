@@ -1,4 +1,4 @@
-const initialState = { carrito: [], usuarios: [] };
+const initialState = { carrito: [], usuarios: [{correo:"Dividido"}] };
 
 export default carritoReducer = (state = initialState, action) => {
     switch (action.type){
@@ -30,11 +30,23 @@ export default carritoReducer = (state = initialState, action) => {
                 ...state, 
                 carrito: arre
             })
-         case 'AGREGAR_USUARIO':
+        case 'VACIAR_CARRITO':
             return ({
                 ...state, 
-                usuarios: state.usuarios.concat(action.usuario)
+                carrito: []
             })
+         case 'AGREGAR_USUARIO':
+            if (state.usuarios.find(element => element.correo == action.usuario.correo))
+            {
+                return state
+            }else{
+                let arru = state.usuarios.slice(0,state.usuarios.length-1)
+                arru.push(action.usuario);
+                return ({
+                    ...state, 
+                    usuarios: arru.concat({correo:"Divido"})
+                })
+            }
          case 'ELIMINAR_USUARIO':
             return ({
                 ...state, 

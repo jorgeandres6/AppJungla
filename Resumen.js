@@ -4,10 +4,9 @@ import { Button, Subheading, Chip, Headline, TextInput} from 'react-native-paper
 import { registrarTicket, addUsuarios, actualizarMetodoDePago, ConfPin} from './httpService';
 import { nuevosRecibos } from './PushService';
 import Firebase from 'firebase';
+import {connect} from "react-redux";
 
 function ResumenCuenta (props) {
-    
-    console.log(props.listaArray);
 
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -181,16 +180,17 @@ function ResumenCuenta (props) {
                 <Button
                 onPress={() => {
                     ConfPin(Firebase.auth().currentUser.uid,text).then((dataSnapshot)=>{
+                        setText('');
                         if(dataSnapshot.exists()){
                             setModalVisible(false);
                             if(props.pendiente){
                                 actualizarMetodoDePago(props.ticketID,TiposDePagos[formaDePago]);
-                                if (formaDePago == 1){
+                                if (TiposDePagos[formaDePago] == "Efectivo"){
                                     props.navegar.navigate('Dinero',{total:props.cuentasfin[0].total,idtemp:props.cuentasfin[0].idtemp})
                                 }
                             }else{
                                 let NR = '';
-                                addUsuarios(Firebase.auth().currentUser.email).then(dataSnapshot => {
+                                /*addUsuarios(Firebase.auth().currentUser.email).then(dataSnapshot => {
                                     let auxIds = [Object.getOwnPropertyNames(dataSnapshot.val())[0]];
                                     let ids= [];
                                     props.arrayIds != undefined ? ids = auxIds.concat(props.arrayIds):ids = auxIds;
@@ -205,8 +205,20 @@ function ResumenCuenta (props) {
                                         });
                                         //props.navegar.navigate('Dinero',{total:props.cuentasfin[0].total,idtemp:NR})
                                     }
-                                });
-                                props.tokens ? nuevosRecibos(props.tokens):null;
+                                });*/
+                                NR = registrarTicket(props.listaArray, props.usuarios, props.cuentasfin,TiposDePagos[formaDePago]);
+                                console.log(TiposDePagos[formaDePago])
+                                if (TiposDePagos[formaDePago] == "Efectivo"){
+                                    props.navegar.reset({
+                                        index:0,
+                                        routes: [{
+                                        name: "Dinero",
+                                        params: {total:props.cuentasfin[0].total,idtemp:NR}
+                                        }]
+                                    });
+                                }
+
+                                props.usuarios.length > 2 ? nuevosRecibos(props.usuarios):null;
                             }  
                         }else{
                             alert('Pin incorrecto')
@@ -226,7 +238,7 @@ function ResumenCuenta (props) {
     );
 }
 
-export default class Resumen extends React.Component{
+class Resumen extends React.Component{
 
     constructor (){
       super();
@@ -244,8 +256,17 @@ export default class Resumen extends React.Component{
 
         return(
 
-            <ResumenCuenta cuentasfin={cuenta} listaArray={lista} usuarios={users} arrayIds={ids} navegar={this.props.navigation} pendiente={pendiente} ticketID={ticketID} tokens={tokens}/>
+            <ResumenCuenta cuentasfin={cuenta} listaArray={this.props.carrito} usuarios={this.props.usuarios} arrayIds={ids} navegar={this.props.navigation} pendiente={pendiente} ticketID={ticketID} tokens={tokens}/>
 
         );
     }
 }
+
+const mapStateToProps = (state) => {
+    return{
+      carrito: state.carrito,
+      usuarios: state.usuarios
+    }
+  }
+  
+  export default connect(mapStateToProps)(Resumen)
