@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import { ScrollView, View, Text, Alert} from 'react-native';
-import { Chip, Button, Paragraph, Card, Title, FAB, IconButton} from 'react-native-paper';
+import { ScrollView, View, Text, Alert, StyleSheet, FlatList} from 'react-native';
+import { Chip, Button, Paragraph, Card, Title, FAB, IconButton, Avatar} from 'react-native-paper';
 import Firebase from 'firebase';
 import {storage} from './config';
 import {connect} from "react-redux";
@@ -8,10 +8,28 @@ import {AumentarItem} from "./store/action";
 import {DisminuirItem} from "./store/action";
 import {EliminarItem} from "./store/action";
 
-
 function Totales (props){
 
   //console.log(props);
+
+  /* 
+  
+  <FAB
+          style = {{position: 'absolute', 
+          margin: 16,
+          alignSelf:'center',
+          bottom: 30}}
+          icon="cash-usd"
+          label={
+            "Pagar Total: $"+cuentasfin[0].total+" USD"
+            //"Pagar Total: $ USD"
+          }
+          onPress = {() => {
+            props.navegar.navigate('Checkout',{cuenta:cuentasfin, lista:listaArray, users:props.usuarios, ids:props.ids, pendiente:false, tokens:props.tokens})
+          }}
+        />
+  
+  */
 
   let cuentasfin = [{usuario:Firebase.auth().currentUser.email,subtotal:0,utilidad:0,total:0}];
 
@@ -67,20 +85,24 @@ function Totales (props){
   );
   
   return (
-     <FAB
-    style = {{position: 'absolute', 
-    margin: 16,
-    alignSelf:'center',
-    bottom: 100}}
-    icon="cash-usd"
-    label={
-      "Pagar Total: $"+cuentasfin[0].total+" USD"
-      //"Pagar Total: $ USD"
-    }
-    onPress = {() => {
-      props.navegar.navigate('Checkout',{cuenta:cuentasfin, lista:listaArray, users:props.usuarios, ids:props.ids, pendiente:false, tokens:props.tokens})
-    }}
-  />
+      <View>
+          <Button
+            onPress={() => props.navegar.navigate('Split')}
+            icon="account-group"
+            mode="outlined"
+            disabled= {props.disable}
+          >
+          Dividir cuenta
+         </Button>
+         <Button
+            onPress={() => props.navegar.navigate('Checkout',{cuenta:cuentasfin, lista:listaArray, users:props.usuarios, ids:props.ids, pendiente:false, tokens:props.tokens})}
+            icon="cash-usd"
+            mode="outlined"
+            disabled= {props.disable}
+          >
+          Pagar Total: $ {cuentasfin[0].total} USD
+         </Button>
+      </View>
   );
 }
 
@@ -93,88 +115,96 @@ function Lista (props){
 
     const [users,setUsers] = useState(arrayPos);
 
-    const menu = props.lista.map((item,index,array) =>
+    const menu = props.lista.map((item,index,array) => {
 
-    <Card
-    key={index}
-       >
-       <Card.Content>
-        <Title style={{fontWeight:'bold'}}>{item.producto}</Title>
-        <Paragraph><Text style={{fontWeight:'bold'}}>Cantidad:</Text> {item.cantidad}</Paragraph>
-        <Paragraph><Text style={{fontWeight:'bold'}}>Precio unitario:</Text> {item.costo + item.cf_opciones} USD</Paragraph>
-        <Paragraph><Text style={{fontWeight:'bold'}}>Precio total:</Text> {item.total} USD</Paragraph>
-        <Paragraph><Text style={{fontWeight:'bold'}}>Opciones:</Text> {item.opciones}</Paragraph>
-        </Card.Content>
+      let opciones = item.opciones.map( element => 
+        
+      <Text>{element}{"\n"}</Text>
+        
+      )
 
-        <Card.Actions style={{justifyContent:"space-around", flexWrap:"wrap"}}>
-          <Chip 
-          icon="information" 
-          onPress={() => {
-            
-            if (props.arrayUsuarios != undefined && props.arrayUsuarios.length > 2){
-
-              let auxpos = users.slice(0,users.length);
-              auxpos[index]++;        
-              if(auxpos[index] > props.arrayUsuarios.length-1){
-                auxpos[index]=0; 
-              }
-              setUsers(auxpos);
-            }
-          }}
-          style={{backgroundColor:props.arrayColores != undefined?props.arrayColores[users[index]]:"grey" }}
-          >
-            <Text style={{color:'white'}}> 
-              {
-                props.arrayUsuarios != undefined?props.arrayUsuarios[users[index]].correo:Firebase.auth().currentUser.email
-              }
-            </Text>
-          </Chip>
-          <View style={{flexDirection:"row-reverse", alignItems:"center"}}>
-            <IconButton 
-            icon='plus-circle-outline'
-            size={40}
-            onPress={()=>{props.aumentar(index)}}
-            />
-            <Text>
-              {item.cantidad}
-            </Text>
-            <IconButton 
-            icon='minus-circle-outline'
-            size={40}
-            onPress={()=>{
-              if (item.cantidad==1){
-                Alert.alert(
-                  "Eliminar item",
-                  "Desea eliminar este item?",
-                  [
-                    {
-                      text:"OK",
-                      onPress: () => props.eliminar(index),
-                      style: "OK"
-                    },
-                    {
-                      text:"Cancelar",
-                      onPress: () => {},
-                      style: "Cancel"
-                    }
-                  ]
-                )
-              }else{
-                props.disminuir(index);
-              }
-
-            }}/>
+    return(
+      <Card
+      key={index}
+      style={{borderColor:"black", borderBottomWidth: StyleSheet.hairlineWidth}}
+        >
+        <Card.Content style={{flexDirection:"row", justifyContent:"space-around", alignItems:"center"}}>
+        <Avatar.Image size={150} source={{uri:props.urls[index]}}/>
+          <View style={{flexDirection:"column", alignItems:"center"}}>
+            <Title style={{fontWeight:'bold'}}>{item.producto}</Title>
+            <Paragraph><Text style={{fontWeight:'bold'}}>Cantidad:</Text> {item.cantidad}</Paragraph>
+            <Paragraph><Text style={{fontWeight:'bold'}}>Precio unitario:</Text> {item.costo + item.cf_opciones} USD</Paragraph>
+            <Paragraph><Text style={{fontWeight:'bold'}}>Precio total:</Text> {item.total} USD</Paragraph>
+            <Paragraph><Text style={{fontWeight:'bold'}}>Opciones:</Text></Paragraph>
+            <Paragraph>{opciones}</Paragraph>
           </View>
-        </Card.Actions>
+          </Card.Content>
 
-        <Card.Cover source={{ uri: 
-          //'https://picsum.photos/'+Math.floor(Math.random()) 
-          props.urls[index]
-          }} 
-        />
+          <Card.Actions style={{flexDirection:"column"}}>
+            <Chip 
+            icon="information" 
+            onPress={() => {
+              
+              if (props.arrayUsuarios != undefined && props.arrayUsuarios.length > 2){
 
-      </Card>
+                let auxpos = users.slice(0,users.length);
+                auxpos[index]++;        
+                if(auxpos[index] > props.arrayUsuarios.length-1){
+                  auxpos[index]=0; 
+                }
+                setUsers(auxpos);
+              }
+            }}
+            style={{backgroundColor:props.arrayColores != undefined?props.arrayColores[users[index]]:"grey" }}
+            >
+              <Text style={{color:'white'}}> 
+                {
+                  props.arrayUsuarios != undefined?props.arrayUsuarios[users[index]].correo:Firebase.auth().currentUser.email
+                }
+              </Text>
+            </Chip>
+            <View style={{flexDirection:"row-reverse", alignItems:"center"}}>
+              <IconButton 
+              icon='plus-circle-outline'
+              size={40}
+              onPress={()=>{props.aumentar(index)}}
+              />
+              <Text>
+                {item.cantidad}
+              </Text>
+              <IconButton 
+              icon='minus-circle-outline'
+              size={40}
+              onPress={()=>{
+                if (item.cantidad==1){
+                  Alert.alert(
+                    "Eliminar item",
+                    "Desea eliminar este item?",
+                    [
+                      {
+                        text:"OK",
+                        onPress: () => {
+                          props.eliminar(index)
+                        },
+                        style: "OK"
+                      },
+                      {
+                        text:"Cancelar",
+                        onPress: () => {},
+                        style: "Cancel"
+                      }
+                    ]
+                  )
+                }else{
+                  props.disminuir(index);
+                }
 
+              }}/>
+            </View>
+          </Card.Actions>
+        </Card>
+      )
+}
        
     );
     
@@ -186,16 +216,6 @@ function Lista (props){
           {menu}
         </ScrollView>
         <Totales lista={props.lista} usuarios={props.arrayUsuarios} ids={props.arrayIds} arrayUsers={users} navegar={props.navegar} tokens={props.tokens}/>
-        <View>
-          <Button
-            onPress={() => props.navegar.navigate('Split')}
-            icon="account-group"
-            mode="contained"
-            disabled= {props.disable}
-          >
-          Dividir cuenta
-         </Button>
-        </View>
       </>
     );
 
@@ -247,11 +267,19 @@ class Carrito extends React.Component{
         const { tipo } = this.props.route.params;
         let deshabilitar = true;
         
-        (this.props.carrito==undefined || this.props.carritolength<1) ? deshabilitar = true : deshabilitar = false;
-            
-              return (
-                <Lista disminuir={this.props.disminuir} eliminar={this.props.eliminar} aumentar={this.props.aumentar} lista={this.props.carrito} navegar={this.props.navigation} disable={deshabilitar} arrayUsuarios={this.props.usuarios} arrayColores={colores} arrayIds={ids} tokens={tokens} urls={this.state.urls}/>
-              );
+        if (this.props.carrito==undefined || this.props.carrito.length<1){
+          deshabilitar = true
+          return (
+            <View style={{alignItems:"center",justifyContent:"center",flex:1}}>
+                <Text>Carrito Vacio</Text>
+            </View>
+          );
+        }else{
+          deshabilitar = false;
+          return (
+            <Lista disminuir={this.props.disminuir} eliminar={this.props.eliminar} aumentar={this.props.aumentar} lista={this.props.carrito} navegar={this.props.navigation} disable={deshabilitar} arrayUsuarios={this.props.usuarios} arrayColores={colores} arrayIds={ids} tokens={tokens} urls={this.state.urls}/>
+          );
+        }
       }
 }
 
